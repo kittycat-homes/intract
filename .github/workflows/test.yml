@@ -1,0 +1,22 @@
+on: [push, pull_request]
+name: test
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup Postgres
+      run: |
+        sudo systemctl start postgresql.service
+        sudo su postgres
+        createuser --createdb intract
+        sudo psql -h localhost -U postgres -c "ALTER ROLE intract PASSWORD 'hunter2'"
+    - name: Run tests
+      run: |
+        cd backend
+        cargo test -- --include-ignored
