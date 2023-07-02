@@ -7,6 +7,8 @@ use axum::{
 use serde_json::json;
 use serial_test::serial;
 use tower::ServiceExt;
+use tracing::metadata::LevelFilter;
+use tracing_subscriber::{filter::Directive, fmt::SubscriberBuilder, EnvFilter};
 
 use crate::{
     api::v1::account::{LoginData, RegisterData},
@@ -52,6 +54,21 @@ async fn register_owner() -> Response {
     let data = admin_register_data();
     let response = post_json_to(&data, "/api/v1/account/register");
     response.await
+}
+
+#[test]
+#[serial]
+fn enable_tracing() {
+    let d: Directive = LevelFilter::DEBUG.into();
+    // enable tracing
+    SubscriberBuilder::default()
+        .pretty()
+        .with_env_filter(
+            EnvFilter::builder()
+                .with_default_directive(Directive::from(d))
+                .from_env_lossy(),
+        )
+        .init();
 }
 
 #[test]

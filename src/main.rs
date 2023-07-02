@@ -85,19 +85,6 @@ async fn generate_server() -> Result<axum::Router, Box<dyn std::error::Error>> {
     #[cfg(test)]
     db::run_migrations()?;
 
-    #[cfg(test)]
-    let d: Directive = LevelFilter::DEBUG.into();
-    // enable tracing
-    #[cfg(test)]
-    SubscriberBuilder::default()
-        .pretty()
-        .with_env_filter(
-            EnvFilter::builder()
-                .with_default_directive(Directive::from(d))
-                .from_env_lossy(),
-        )
-        .init();
-
     // generate state
     let state = Arc::new(InnerAppState {
         pool: db::get_pool().await?,
