@@ -4,12 +4,15 @@ use rand::distributions::{Alphanumeric, DistString};
 use serde::{Deserialize, Serialize};
 use tracing_subscriber::filter::{Directive, LevelFilter};
 
+#[cfg(not(test))]
 use crate::cli::CLI;
 
 /// global var to store config in,
 /// if config needs to be read, ideally use this
 pub static CONFIG: Lazy<AppConfig> = Lazy::new(|| {
-    // try loading config if specified in cli args
+    // try loading config if specified in cli args,
+    // there are not cli args in a test, this is why we skip it
+    #[cfg(not(test))]
     if let Some(config_path) = CLI.config.clone() {
         match confy::load_path(config_path) {
             Ok(v) => return v,
@@ -127,5 +130,16 @@ impl From<Loglevel> for Directive {
             Loglevel::Warn => LevelFilter::WARN,
         }
         .into()
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    /// try getting basic thing from config
+    #[test]
+    fn load_config() {
+        assert!(CONFIG.server.min_password_size == AppConfig::default().server.min_password_size)
     }
 }

@@ -18,10 +18,7 @@ pub fn hash_password_and_generate_salt(pass: &str) -> Result<HashAndSalt, Box<dy
     // default params for argon 2
     let salt = SaltString::generate(&mut OsRng).to_string();
     let hash = hash_password(pass, &salt)?;
-    Ok(HashAndSalt {
-        hash,
-        salt,
-    })
+    Ok(HashAndSalt { hash, salt })
 }
 
 /// used to hash a password when the salt is already known.
@@ -43,6 +40,12 @@ pub fn hash_password(pass: &str, salt: &str) -> Result<String, Box<dyn Error>> {
 #[cfg(test)]
 mod test {
     use super::*;
+
+    #[test]
+    fn check_hashing() {
+        let pass = String::from("supersecret");
+        assert!(hash_password_and_generate_salt(&pass).is_ok());
+    }
 
     #[test]
     fn check_hashes_unequal() {
