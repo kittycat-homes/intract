@@ -8,7 +8,11 @@ use serde_json::json;
 use serial_test::serial;
 use tower::ServiceExt;
 
-use crate::api::v1::account::{LoginData, RegisterData};
+use crate::{
+    api::v1::account::{LoginData, RegisterData},
+    cli,
+    db::models::Powerlevel,
+};
 
 static ADMIN_USERNAME: &'static str = "bigboss123";
 static ADMIN_PASSWORD: &'static str = "IAMBIGBOSS";
@@ -102,6 +106,12 @@ async fn login_too_early() {
     .to_string();
     let response = post_json_to(&data, "/api/v1/account/login").await;
     assert_eq!(response.status(), StatusCode::IM_A_TEAPOT);
+}
+
+#[tokio::test]
+#[serial]
+async fn approve_user() {
+    assert!(cli::user::change_powerlevel(ADMIN_USERNAME, &Powerlevel::Owner).is_ok());
 }
 
 #[tokio::test]
