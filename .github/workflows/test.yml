@@ -18,7 +18,7 @@ jobs:
       run: |
         sudo systemctl start postgresql.service
         sudo su - postgres -c "createuser --createdb intract"
-        sudo su - postgres -c "psql -h localhost -U postgres -c \"ALTER ROLE intract PASSWORD 'hunter2'\"""
+        sudo su - postgres -c "psql -h localhost -U postgres -c \"ALTER ROLE intract PASSWORD 'hunter2'\""
     - name: Run tests
       run: |
         cd backend
