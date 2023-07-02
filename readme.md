@@ -1,0 +1,1 @@
+[![codecov](https://codecov.io/gh/kittycat-homes/intract/branch/main/graph/badge.svg?token=KR2B0IHIAL)](https://codecov.io/gh/kittycat-homes/intract)
