@@ -4,7 +4,7 @@ use axum::{
     response::Response,
     Router,
 };
-use serde_json::{json, Value};
+use serde_json::json;
 use serial_test::serial;
 use tower::ServiceExt;
 
@@ -23,6 +23,7 @@ async fn empty_register() {
     let response = app
         .oneshot(
             Request::builder()
+                .method("POST")
                 .uri("/api/v1/account/register")
                 .body(Body::empty())
                 .unwrap(),
@@ -34,25 +35,31 @@ async fn empty_register() {
 }
 
 fn admin_register_data() -> String {
-    json!(RegisterData {
-        username: ADMIN_USERNAME.into(),
+    let data = json!(RegisterData {
         password: ADMIN_PASSWORD.into(),
+        username: ADMIN_USERNAME.into(),
         join_reason: None,
     })
-    .to_string()
+    .to_string();
+    println!("{}", data);
+    data
 }
 
 async fn register_owner() -> Response {
-    app()
+    let body = Body::from(admin_register_data());
+    let response = app()
         .await
         .oneshot(
             Request::builder()
+                .method("POST")
                 .uri("/api/v1/account/register")
-                .body(Body::from(admin_register_data()))
+                .body(body)
                 .unwrap(),
         )
         .await
-        .unwrap()
+        .unwrap();
+    println!("{:#?}", response);
+    response
 }
 
 #[tokio::test]
@@ -68,6 +75,4 @@ async fn try_registering_existing_account() {
 }
 
 #[tokio::test]
-async fn login_unapproved() {
-    
-}
+async fn login_unapproved() {}
