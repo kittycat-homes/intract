@@ -37,7 +37,7 @@ mod test {
     
     #[tokio::test]
     async fn connect_to_db() {
-        assert!(get_pool().await.is_ok())
+        assert!(get_pool().await.unwrap().get().await.is_ok())
     }
 
     #[test]

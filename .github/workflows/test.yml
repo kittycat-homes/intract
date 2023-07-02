@@ -7,19 +7,30 @@ env:
 jobs:
   test:
     runs-on: ubuntu-latest
-    env:
-      POSTGRES_PASSWORD: postgres
+    # Service containers to run with `runner-job`
+    services:
+      # Label used to access the service container
+      postgres:
+        # Docker Hub image
+        image: postgres
+        # Provide the password for postgres
+        env:
+          POSTGRES_PASSWORD: hunter2
+          POSTGRES_DB: intract
+          POSTGRES_USER: intract
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          # Maps tcp port 5432 on service container to the host
+          - 5432:5432
 
     steps:
-    - uses: actions/checkout@v3
-    - uses: Swatinem/rust-cache@v2
-    - name: install stuff
-      run: |
-        sudo apt-get update
-        sudo apt-get install --yes postgresql-client
-    - run: sudo systemctl start postgresql.service
-    - run: sudo su - postgres -c "createuser intract"
-    - run: sudo su - postgres -c "createdb -O intract intract"
-    - name: Run tests
-      run: |
-        RUST_BACKTRACE=1 cargo test
+      - uses: actions/checkout@v3
+      - uses: Swatinem/rust-cache@v2
+      - name: Run tests
+        run: |
+          RUST_BACKTRACE=1 cargo test
