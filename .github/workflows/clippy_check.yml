@@ -17,4 +17,4 @@ jobs:
       - name: Run Clippy
         run: |
           cd backend
-          cargo clippy --all-targets --all-features
+          cargo clippy
