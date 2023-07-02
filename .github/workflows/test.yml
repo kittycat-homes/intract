@@ -21,4 +21,4 @@ jobs:
     - run: sudo su - postgres -c "createuser --createdb intract"
     - name: Run tests
       run: |
-        cargo test -- --include-ignored
+        RUST_BACKTRACE=1 cargo test

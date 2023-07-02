@@ -59,7 +59,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         } => match subcommand {
             cli::UserSubcommands::ChangePassword { new_password } => {
                 cli::user::change_password(&username, &new_password)?
-            },
+            }
             cli::UserSubcommands::SetPowerLevel { powerlevel } => {
                 cli::user::change_powerlevel(&username, &powerlevel)?
             }
@@ -69,8 +69,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     Ok(())
 }
 
-/// start the actual web server
-async fn start_server() -> Result<(), Box<dyn std::error::Error>> {
+async fn generate_server() -> Result<axum::Router, Box<dyn std::error::Error>> {
     // generate openapi docs
     aide::gen::on_error(|error| panic!("{}", error));
     aide::gen::extract_schemas(true);
@@ -82,14 +81,19 @@ async fn start_server() -> Result<(), Box<dyn std::error::Error>> {
     });
 
     // put together routes
-    let app = ApiRouter::new()
+    Ok(ApiRouter::new()
         .nest_api_service("/api", api::routes(state.clone()))
         .nest_api_service("/docs", docs::docs_routes(state.clone()))
         .finish_api_with(&mut api, docs::add_api_docs)
         .layer(Extension(Arc::new(api)))
         .layer(TimeoutLayer::new(Duration::from_secs(20)))
         .layer(CompressionLayer::new())
-        .with_state(state);
+        .with_state(state))
+}
+
+/// start the actual web server
+async fn start_server() -> Result<(), Box<dyn std::error::Error>> {
+    let app = generate_server().await?;
 
     let addr = config::CONFIG
         .server
