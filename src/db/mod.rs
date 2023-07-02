@@ -30,3 +30,13 @@ pub async fn get_pool() -> Result<Pool, Box<dyn Error>> {
     let pool = bb8::Pool::builder().build(config).await?;
     Ok(pool)
 }
+
+#[cfg(test)]
+mod test {
+    use super::*;
+    
+    #[tokio::test]
+    async fn connect_to_db() {
+        assert!(get_pool().await.is_ok())
+    }
+}
