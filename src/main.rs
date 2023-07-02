@@ -81,6 +81,10 @@ async fn generate_server() -> Result<axum::Router, Box<dyn std::error::Error>> {
     aide::gen::extract_schemas(true);
     let mut api = OpenApi::default(); // used to edit api docs
 
+    // tests that need db call this, but not 
+    #[cfg(test)]
+    db::run_migrations()?;
+
     // generate state
     let state = Arc::new(InnerAppState {
         pool: db::get_pool().await?,
