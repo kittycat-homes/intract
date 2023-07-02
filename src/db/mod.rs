@@ -39,9 +39,4 @@ mod test {
     async fn connect_to_db() {
         assert!(get_pool().await.unwrap().get().await.is_ok())
     }
-
-    #[test]
-    fn test_migrations() {
-        assert!(run_migrations().is_ok())
-    }
 }

@@ -11,7 +11,7 @@ use tower::ServiceExt;
 use crate::{
     api::v1::account::{LoginData, RegisterData},
     cli,
-    db::models::Powerlevel,
+    db::{models::Powerlevel, self},
 };
 
 static ADMIN_USERNAME: &'static str = "bigboss123";
@@ -52,6 +52,12 @@ async fn register_owner() -> Response {
     let data = admin_register_data();
     let response = post_json_to(&data, "/api/v1/account/register");
     response.await
+}
+
+#[test]
+#[serial]
+fn test_migrations() {
+    assert!(db::run_migrations().is_ok())
 }
 
 #[tokio::test]
