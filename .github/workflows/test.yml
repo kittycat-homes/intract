@@ -10,6 +10,10 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+    - name: install stuff
+      run: |
+        apt-get update
+        apt-get install --yes postgresql-client
     - name: Setup Postgres
       run: |
         sudo systemctl start postgresql.service
