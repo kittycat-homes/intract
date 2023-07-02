@@ -13,7 +13,7 @@ use tracing_subscriber::{filter::Directive, fmt::SubscriberBuilder, EnvFilter};
 use crate::{
     api::v1::account::{LoginData, RegisterData},
     cli,
-    db::{models::Powerlevel},
+    db::models::Powerlevel,
 };
 
 static ADMIN_USERNAME: &str = "bigboss123";
@@ -25,18 +25,17 @@ async fn app() -> Router {
 
 async fn post_json_to(json: &str, to: &str) -> Response {
     let app = app().await;
-    
-    app
-        .oneshot(
-            Request::builder()
-                .method("POST")
-                .header("Content-Type", "application/json")
-                .uri(to.to_string())
-                .body(Body::from(json.to_string()))
-                .unwrap(),
-        )
-        .await
-        .unwrap()
+
+    app.oneshot(
+        Request::builder()
+            .method("POST")
+            .header("Content-Type", "application/json")
+            .uri(to.to_string())
+            .body(Body::from(json.to_string()))
+            .unwrap(),
+    )
+    .await
+    .unwrap()
 }
 
 fn admin_register_data() -> String {
@@ -140,4 +139,33 @@ async fn login_wrong_password() {
     .to_string();
     let response = post_json_to(&data, "/api/v1/account/login").await;
     assert_eq!(response.status(), StatusCode::UNAUTHORIZED);
+}
+
+#[tokio::test]
+async fn smoke_check_docs() {
+    let app = app().await;
+
+    let result = app.oneshot(
+        Request::builder()
+            .uri("/docs/openapi.json")
+            .method("GET")
+            .body(Body::empty())
+            .unwrap(),
+    );
+
+    assert_eq!(result.await.unwrap().status(), StatusCode::OK);
+}
+
+#[tokio::test]
+async fn check_user_guard() {
+    let app = app().await;
+    let result = app.oneshot(
+        Request::builder()
+            .header("Key", "heheheimlying")
+            .uri("/api/v1/authorized/account/whoami")
+            .body(Body::empty())
+            .unwrap(),
+    ).await.unwrap();
+    
+    assert_eq!(result.status(), StatusCode::UNAUTHORIZED);
 }
