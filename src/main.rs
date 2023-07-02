@@ -7,8 +7,8 @@ use axum::Extension;
 use cli::CLI;
 use tokio::signal;
 use tower_http::{compression::CompressionLayer, timeout::TimeoutLayer};
-use tracing::{info, metadata::LevelFilter};
-use tracing_subscriber::{filter::Directive, fmt::SubscriberBuilder, EnvFilter};
+use tracing::{info};
+use tracing_subscriber::{fmt::SubscriberBuilder, EnvFilter};
 
 /// this is where the api is defined.
 /// subservices are split into their own modules

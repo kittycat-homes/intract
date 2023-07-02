@@ -13,11 +13,11 @@ use tracing_subscriber::{filter::Directive, fmt::SubscriberBuilder, EnvFilter};
 use crate::{
     api::v1::account::{LoginData, RegisterData},
     cli,
-    db::{models::Powerlevel, self},
+    db::{models::Powerlevel},
 };
 
-static ADMIN_USERNAME: &'static str = "bigboss123";
-static ADMIN_PASSWORD: &'static str = "IAMBIGBOSS";
+static ADMIN_USERNAME: &str = "bigboss123";
+static ADMIN_PASSWORD: &str = "IAMBIGBOSS";
 
 async fn app() -> Router {
     crate::generate_server().await.unwrap()
@@ -25,7 +25,8 @@ async fn app() -> Router {
 
 async fn post_json_to(json: &str, to: &str) -> Response {
     let app = app().await;
-    let response = app
+    
+    app
         .oneshot(
             Request::builder()
                 .method("POST")
@@ -35,8 +36,7 @@ async fn post_json_to(json: &str, to: &str) -> Response {
                 .unwrap(),
         )
         .await
-        .unwrap();
-    response
+        .unwrap()
 }
 
 fn admin_register_data() -> String {
@@ -65,7 +65,7 @@ fn enable_tracing() {
         .pretty()
         .with_env_filter(
             EnvFilter::builder()
-                .with_default_directive(Directive::from(d))
+                .with_default_directive(d)
                 .from_env_lossy(),
         )
         .init();
