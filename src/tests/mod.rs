@@ -71,20 +71,20 @@ fn enable_tracing() {
         .init();
 }
 
-#[test]
-#[serial]
-fn test_migrations() {
-    assert!(db::run_migrations().is_ok())
+#[tokio::test]
+async fn integration_test() {
+    register_new_owner().await;
+    try_registering_existing_account().await;
+    register_no_password().await;
+    login_too_early().await;
+    approve_user().await;
+    login_wrong_password().await;
 }
 
-#[tokio::test]
-#[serial]
 async fn register_new_owner() {
     assert_eq!(register_owner().await.status(), StatusCode::OK);
 }
 
-#[tokio::test]
-#[serial]
 async fn try_registering_existing_account() {
     assert_eq!(
         register_owner().await.status(),
@@ -92,8 +92,6 @@ async fn try_registering_existing_account() {
     )
 }
 
-#[tokio::test]
-#[serial]
 async fn register_no_password() {
     let body = Body::from(
         json!(RegisterData {
@@ -118,8 +116,6 @@ async fn register_no_password() {
     assert_eq!(response.status(), StatusCode::BAD_REQUEST);
 }
 
-#[tokio::test]
-#[serial]
 async fn login_too_early() {
     let data = json!(LoginData {
         description: None,
@@ -131,14 +127,10 @@ async fn login_too_early() {
     assert_eq!(response.status(), StatusCode::IM_A_TEAPOT);
 }
 
-#[tokio::test]
-#[serial]
 async fn approve_user() {
     assert!(cli::user::change_powerlevel(ADMIN_USERNAME, &Powerlevel::Owner).is_ok());
 }
 
-#[tokio::test]
-#[serial]
 async fn login_wrong_password() {
     let data = json!(LoginData {
         description: None,
