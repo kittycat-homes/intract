@@ -2,8 +2,8 @@ use aide::axum::ApiRouter;
 
 use crate::state::AppState;
 
-mod account;
-mod server;
+pub mod account;
+pub mod server;
 
 /// for routes that require an authorized user with regular user permissions
 mod authorized;

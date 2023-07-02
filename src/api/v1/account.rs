@@ -18,7 +18,7 @@ use diesel::{ExpressionMethods, QueryDsl, SelectableHelper};
 use diesel_async::RunQueryDsl;
 use rand::distributions::{Alphanumeric, DistString};
 use schemars::JsonSchema;
-use serde::{Deserialize};
+use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
 use crate::{
@@ -74,23 +74,23 @@ pub fn routes(state: AppState) -> ApiRouter {
 }
 
 /// data needed to sign up for an account
-#[derive(Deserialize, JsonSchema)]
-struct RegisterData {
+#[derive(Deserialize, JsonSchema, Serialize)]
+pub struct RegisterData {
     /// username to use, you can change this later. this is used for logging in.
-    username: String,
+    pub username: String,
     /// password to use. it has to be
     /// at least as long as the password set in the
     /// server config.
-    password: String,
+    pub password: String,
     /// give a bit of context as to why you want to join.
     /// links to social media and a little bit about youself can provide
     /// good reasons for an admin to let you join.
-    join_reason: Option<String>,
+    pub join_reason: Option<String>,
 }
 
 async fn register(
     State(state): State<AppState>,
-    Form(form): Form<RegisterData>,
+    Json(form): Json<RegisterData>,
 ) -> impl IntoApiResponse {
     if form.password.len() < CONFIG.server.min_password_size as usize {
         return Err(StatusCode::BAD_REQUEST);
@@ -145,12 +145,12 @@ async fn register(
 }
 
 /// data used to log a user in
-#[derive(Deserialize, JsonSchema)]
-struct LoginData {
+#[derive(Deserialize, JsonSchema, Serialize)]
+pub struct LoginData {
     /// username for the account you want to log in
-    username: String,
+    pub username: String,
     /// password for the user you want to log in
-    password: String,
+    pub password: String,
     /**
      * description for a session.
      * clients can set this to whatever they want,
@@ -159,12 +159,12 @@ struct LoginData {
      * something like time and client name can be useful.
      * just make sure they are human readable!
      */
-    description: Option<String>,
+    pub description: Option<String>,
 }
 
 async fn login(
     State(state): State<AppState>,
-    Form(login_data): Form<LoginData>,
+    Json(login_data): Json<LoginData>,
 ) -> Result<Json<Session>, StatusCode> {
     let mut conn = state
         .pool
@@ -198,9 +198,11 @@ async fn login(
         description: login_data.description,
         user_id: known_user.id,
         secret: Alphanumeric.sample_string(&mut rand::thread_rng(), 64),
-        expires_at: std::time::SystemTime::now().checked_add(Duration::from_secs(
-            604800, // this is how many seconds there are in a week
-        )).ok_or(StatusCode::INTERNAL_SERVER_ERROR)?,
+        expires_at: std::time::SystemTime::now()
+            .checked_add(Duration::from_secs(
+                604800, // this is how many seconds there are in a week
+            ))
+            .ok_or(StatusCode::INTERNAL_SERVER_ERROR)?,
     };
 
     diesel::insert_into(sessions::table)
@@ -212,3 +214,4 @@ async fn login(
     // return the secret
     Ok(Json(session))
 }
+ 

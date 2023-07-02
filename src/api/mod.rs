@@ -2,7 +2,7 @@ use aide::axum::ApiRouter;
 
 use crate::state::AppState;
 
-mod v1;
+pub mod v1;
 
 pub fn routes(state: AppState) -> ApiRouter {
     aide::gen::infer_responses(true);

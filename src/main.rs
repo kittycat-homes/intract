@@ -12,7 +12,7 @@ use tracing_subscriber::{fmt::SubscriberBuilder, EnvFilter};
 
 /// this is where the api is defined.
 /// subservices are split into their own modules
-mod api;
+pub mod api;
 /// command line app
 pub mod cli;
 /// generate and read config file
@@ -33,6 +33,12 @@ pub mod pass;
 pub mod schema;
 /// state for the app
 pub mod state;
+
+/// tests for CI/CD,
+/// these are not meant for ci/cd.
+/// don't worry if they fail locally.
+#[cfg(test)]
+mod tests;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
