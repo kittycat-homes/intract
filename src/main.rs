@@ -7,8 +7,8 @@ use axum::Extension;
 use cli::CLI;
 use tokio::signal;
 use tower_http::{compression::CompressionLayer, timeout::TimeoutLayer};
-use tracing::info;
-use tracing_subscriber::{fmt::SubscriberBuilder, EnvFilter};
+use tracing::{info, metadata::LevelFilter};
+use tracing_subscriber::{filter::Directive, fmt::SubscriberBuilder, EnvFilter};
 
 /// this is where the api is defined.
 /// subservices are split into their own modules
@@ -81,9 +81,22 @@ async fn generate_server() -> Result<axum::Router, Box<dyn std::error::Error>> {
     aide::gen::extract_schemas(true);
     let mut api = OpenApi::default(); // used to edit api docs
 
-    // tests that need db call this, but not 
+    // tests that need db call this, but not in  main
     #[cfg(test)]
     db::run_migrations()?;
+
+    #[cfg(test)]
+    let d: Directive = LevelFilter::DEBUG.into();
+    // enable tracing
+    #[cfg(test)]
+    SubscriberBuilder::default()
+        .pretty()
+        .with_env_filter(
+            EnvFilter::builder()
+                .with_default_directive(Directive::from(d))
+                .from_env_lossy(),
+        )
+        .init();
 
     // generate state
     let state = Arc::new(InnerAppState {
