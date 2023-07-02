@@ -11,7 +11,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: install clippy
-      - run: cd backend
       - name: Run Clippy
         run: |
           cd backend
