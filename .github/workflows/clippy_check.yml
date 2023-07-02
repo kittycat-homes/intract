@@ -9,5 +9,4 @@ jobs:
       - uses: Swatinem/rust-cache@v2
       - name: Run Clippy
         run: |
-          cd backend
           cargo clippy --all-targets --all-features
