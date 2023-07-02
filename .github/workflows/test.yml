@@ -18,7 +18,8 @@ jobs:
         sudo apt-get update
         sudo apt-get install --yes postgresql-client
     - run: sudo systemctl start postgresql.service
-    - run: sudo su - postgres -c "createuser --createdb intract"
+    - run: sudo su - postgres -c "createuser intract"
+    - run: sudo su - postgres -c "createdb -O intract intract"
     - name: Run tests
       run: |
         RUST_BACKTRACE=1 cargo test
