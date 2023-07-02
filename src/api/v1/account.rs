@@ -9,10 +9,7 @@ use aide::{
     axum::{routing::post_with, ApiRouter, IntoApiResponse},
     gen::infer_responses,
 };
-use axum::{
-    extract::{Form, State},
-    http::StatusCode,
-};
+use axum::{extract::State, http::StatusCode};
 
 use diesel::{ExpressionMethods, QueryDsl, SelectableHelper};
 use diesel_async::RunQueryDsl;
@@ -214,4 +211,3 @@ async fn login(
     // return the secret
     Ok(Json(session))
 }
- 
