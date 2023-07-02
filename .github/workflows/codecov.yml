@@ -18,6 +18,13 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+    - name: install stuff
+      run: |
+        sudo apt-get update
+        sudo apt-get install --yes postgresql-client
+    - run: sudo systemctl start postgresql.service
+    - run: sudo su - postgres -c "createuser intract"
+    - run: sudo su - postgres -c "createdb -O intract intract"
     - name: rust-tarpaulin
       uses: actions-rs/tarpaulin@v0.1
       with:
