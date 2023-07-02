@@ -18,7 +18,6 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - run: mv ./backend/* -a ./
     - name: rust-tarpaulin
       uses: actions-rs/tarpaulin@v0.1
       with:
