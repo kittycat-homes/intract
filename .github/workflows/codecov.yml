@@ -16,9 +16,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - run: cd backend
     - name: rust-tarpaulin
       uses: actions-rs/tarpaulin@v0.1
+      working-directory: ./backend
       with:
         version: '0.22.0'
         args: '-- --include-ignored'
