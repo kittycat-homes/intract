@@ -8,7 +8,7 @@ use serde_json::json;
 use serial_test::serial;
 use tower::ServiceExt;
 
-use crate::api::v1::account::RegisterData;
+use crate::api::v1::account::{LoginData, RegisterData};
 
 static ADMIN_USERNAME: &'static str = "bigboss123";
 static ADMIN_PASSWORD: &'static str = "IAMBIGBOSS";
@@ -17,22 +17,20 @@ async fn app() -> Router {
     crate::generate_server().await.unwrap()
 }
 
-#[tokio::test]
-async fn empty_register() {
+async fn post_json_to(json: &str, to: &str) -> Response {
     let app = app().await;
     let response = app
         .oneshot(
             Request::builder()
                 .method("POST")
                 .header("Content-Type", "application/json")
-                .uri("/api/v1/account/register")
-                .body(Body::empty())
+                .uri(to.to_string())
+                .body(Body::from(json.to_string()))
                 .unwrap(),
         )
         .await
         .unwrap();
-
-    assert_ne!(StatusCode::OK, response.status());
+    response
 }
 
 fn admin_register_data() -> String {
@@ -47,21 +45,9 @@ fn admin_register_data() -> String {
 }
 
 async fn register_owner() -> Response {
-    let body = Body::from(admin_register_data());
-    let response = app()
-        .await
-        .oneshot(
-            Request::builder()
-                .method("POST")
-                .header("Content-Type", "application/json")
-                .uri("/api/v1/account/register")
-                .body(body)
-                .unwrap(),
-        )
-        .await
-        .unwrap();
-    println!("{:#?}", response);
-    response
+    let data = admin_register_data();
+    let response = post_json_to(&data, "/api/v1/account/register");
+    response.await
 }
 
 #[tokio::test]
@@ -107,6 +93,26 @@ async fn register_no_password() {
 
 #[tokio::test]
 #[serial]
-async fn login_unapproved() {
+async fn login_too_early() {
+    let data = json!(LoginData {
+        description: None,
+        password: ADMIN_PASSWORD.into(),
+        username: ADMIN_USERNAME.into()
+    })
+    .to_string();
+    let response = post_json_to(&data, "/api/v1/account/login").await;
+    assert_eq!(response.status(), StatusCode::IM_A_TEAPOT);
+}
 
+#[tokio::test]
+#[serial]
+async fn login_wrong_password() {
+    let data = json!(LoginData {
+        description: None,
+        password: "THISISNOTTHERIGHTPASSWORD".into(),
+        username: ADMIN_USERNAME.into()
+    })
+    .to_string();
+    let response = post_json_to(&data, "/api/v1/account/login").await;
+    assert_eq!(response.status(), StatusCode::UNAUTHORIZED);
 }
