@@ -1,41 +1,48 @@
 name: codecov
 
-on:
-  push:
-    branches:
-    - "main"
-  pull_request:
-    branches: [ "main" ]
+on: [push, pull_request]
 
 env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  upload_to_codecov:
+  test_and_upload_to_codecov:
+    services:
+      # Label used to access the service container
+      postgres:
+        # Docker Hub image
+        image: postgres
+        # Provide the password for postgres
+        env:
+          POSTGRES_PASSWORD: hunter2
+          POSTGRES_DB: intract
+          POSTGRES_USER: intract
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          # Maps tcp port 5432 on service container to the host
+          - 5432:5432
     runs-on: ubuntu-latest
     env:
       working-directory: ./backend
 
     steps:
-    - uses: actions/checkout@v3
-    - name: install stuff
-      run: |
-        sudo apt-get update
-        sudo apt-get install --yes postgresql-client
-    - run: sudo systemctl start postgresql.service
-    - run: sudo su - postgres -c "createuser intract"
-    - run: sudo su - postgres -c "createdb -O intract intract"
-    - name: rust-tarpaulin
-      uses: actions-rs/tarpaulin@v0.1
-      with:
-        version: '0.22.0'
-        args: '-- --include-ignored'
-    - name: upload to codecov
-      uses: codecov/codecov-action@v3
-      with:
-        token: ${{secrets.CODECOV_TOKEN}}
-    - name: archive coverage results
-      uses: actions/upload-artifact@v1
-      with:
-        name: code-coverage-report
-        path: cobertura.xml
+      - uses: actions/checkout@v3
+      - name: rust-tarpaulin
+        uses: actions-rs/tarpaulin@v0.1
+        with:
+          version: "0.22.0"
+          args: "-- --include-ignored"
+      - name: upload to codecov
+        uses: codecov/codecov-action@v3
+        with:
+          token: ${{secrets.CODECOV_TOKEN}}
+      - name: archive coverage results
+        uses: actions/upload-artifact@v1
+        with:
+          name: code-coverage-report
+          path: cobertura.xml
