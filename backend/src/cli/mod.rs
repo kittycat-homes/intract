@@ -8,7 +8,7 @@ use crate::db::models::Powerlevel;
 /// user cli settings
 pub mod user;
 
-pub static CLI: Lazy<Cli> = Lazy::new(|| Cli::parse());
+pub static CLI: Lazy<Cli> = Lazy::new(Cli::parse);
 
 #[derive(Parser, Clone)]
 pub struct Cli {

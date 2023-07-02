@@ -4,8 +4,7 @@ use crate::{config::CONFIG, state::InnerAppState};
 use aide::{axum::ApiRouter, openapi::OpenApi};
 use axum::Extension;
 
-use clap::Parser;
-use cli::{Cli, CLI};
+use cli::CLI;
 use tokio::signal;
 use tower_http::{compression::CompressionLayer, timeout::TimeoutLayer};
 use tracing::info;
