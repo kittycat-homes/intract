@@ -13,7 +13,7 @@ use tracing_subscriber::{filter::Directive, fmt::SubscriberBuilder, EnvFilter};
 use crate::{
     api::v1::account::{LoginData, RegisterData},
     cli,
-    db::models::Powerlevel,
+    db::models::{Powerlevel, Session},
 };
 
 static ADMIN_USERNAME: &str = "bigboss123";
@@ -78,6 +78,7 @@ async fn integration_test() {
     login_too_early().await;
     approve_user().await;
     login_wrong_password().await;
+    test_login().await;
 }
 
 async fn register_new_owner() {
@@ -141,6 +142,31 @@ async fn login_wrong_password() {
     assert_eq!(response.status(), StatusCode::UNAUTHORIZED);
 }
 
+async fn test_login() {
+    let data = json!(LoginData {
+        description: None,
+        password: ADMIN_PASSWORD.into(),
+        username: ADMIN_USERNAME.into()
+    })
+    .to_string();
+
+    let result = post_json_to(&data, "/api/v1/account/login").await;
+    assert_eq!(result.status(), StatusCode::OK);
+
+    let session: Session =
+        serde_json::from_slice(&hyper::body::to_bytes(result.into_body()).await.unwrap()).unwrap();
+
+    let app = app().await;
+    app.oneshot(
+        Request::builder()
+                .method("GET")
+                .uri("/api/v1/authorized/account/whoami")
+                .header("Key", session.secret)
+                .body(Body::empty())
+                .unwrap(),
+    );
+}
+
 #[tokio::test]
 async fn smoke_check_docs() {
     let app = app().await;
@@ -159,13 +185,32 @@ async fn smoke_check_docs() {
 #[tokio::test]
 async fn check_user_guard() {
     let app = app().await;
-    let result = app.oneshot(
-        Request::builder()
-            .header("Key", "heheheimlying")
-            .uri("/api/v1/authorized/account/whoami")
-            .body(Body::empty())
-            .unwrap(),
-    ).await.unwrap();
-    
+    let result = app
+        .oneshot(
+            Request::builder()
+                .header("Key", "heheheimlying")
+                .uri("/api/v1/authorized/account/whoami")
+                .body(Body::empty())
+                .unwrap(),
+        )
+        .await
+        .unwrap();
+
     assert_eq!(result.status(), StatusCode::UNAUTHORIZED);
+}
+
+#[tokio::test]
+async fn check_server_info() {
+    let app = app().await;
+    let result = app
+        .oneshot(
+            Request::builder()
+                .uri("/api/v1/server/info")
+                .body(Body::empty())
+                .unwrap(),
+        )
+        .await
+        .unwrap();
+
+    assert_eq!(result.status(), StatusCode::OK);
 }

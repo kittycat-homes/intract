@@ -1,7 +1,7 @@
 use clap::ValueEnum;
 use diesel::prelude::*;
 use schemars::JsonSchema;
-use serde::Serialize;
+use serde::{Serialize, Deserialize};
 use uuid::Uuid;
 
 #[derive(
@@ -69,7 +69,7 @@ pub struct User {
     pub salt: String,
 }
 
-#[derive(Queryable, Selectable, Serialize, JsonSchema, Insertable)]
+#[derive(Queryable, Selectable, Serialize, Deserialize, JsonSchema, Insertable)]
 #[diesel(table_name= crate::schema::sessions)]
 #[diesel(check_for_backend(diesel::pg::Pg))]
 pub struct Session {

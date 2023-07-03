@@ -33,6 +33,7 @@ diesel = {version = "2", features = ["postgres", "uuid"]}
 diesel-async = {version = "0.3", features = ["postgres", "bb8"]}
 diesel-derive-enum = {version = "2", features = ["postgres"]}
 diesel_migrations = {version = "2", features = ["postgres"]}
+hyper = "0.14.27"
 indexmap = "1"
 once_cell = "1"
 rand = "0.8.5"

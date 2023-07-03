@@ -1208,6 +1208,7 @@ dependencies = [
  "diesel-async",
  "diesel-derive-enum",
  "diesel_migrations",
+ "hyper",
  "indexmap 1.9.3",
  "once_cell",
  "rand",
