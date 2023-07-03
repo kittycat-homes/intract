@@ -5,10 +5,10 @@ use axum::{
     Router,
 };
 use serde_json::json;
-use serial_test::serial;
+
 use tower::ServiceExt;
-use tracing::metadata::LevelFilter;
-use tracing_subscriber::{filter::Directive, fmt::SubscriberBuilder, EnvFilter};
+
+
 
 use crate::{
     api::v1::account::{LoginData, RegisterData},
