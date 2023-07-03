@@ -60,7 +60,7 @@ mod test {
         assert_eq!(result.status(), StatusCode::OK);
         assert_eq!(
             result.headers().get(header::CONTENT_TYPE).unwrap(),
-            "text/html"
+            "text/html; charset=utf-8"
         );
     }
 
@@ -80,7 +80,7 @@ mod test {
         assert_eq!(result.status(), StatusCode::OK);
         assert_eq!(
             result.headers().get(header::CONTENT_TYPE).unwrap(),
-            "text/html"
+            "text/html; charset=utf-8"
         );
     }
 
