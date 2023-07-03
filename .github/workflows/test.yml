@@ -30,6 +30,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
       - name: build frontend
         run: bash build_frontend.sh
       - uses: Swatinem/rust-cache@v2
