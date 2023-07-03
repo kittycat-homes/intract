@@ -157,14 +157,15 @@ async fn test_login() {
         serde_json::from_slice(&hyper::body::to_bytes(result.into_body()).await.unwrap()).unwrap();
 
     let app = app().await;
-    app.oneshot(
+    let whoamiresult = app.oneshot(
         Request::builder()
                 .method("GET")
                 .uri("/api/v1/authorized/account/whoami")
                 .header("Key", session.secret)
                 .body(Body::empty())
                 .unwrap(),
-    );
+    ).await.unwrap();
+    assert_eq!(whoamiresult.status(), StatusCode::OK);
 }
 
 #[tokio::test]
