@@ -156,16 +156,37 @@ async fn test_login() {
     let session: Session =
         serde_json::from_slice(&hyper::body::to_bytes(result.into_body()).await.unwrap()).unwrap();
 
+    cli::user::change_powerlevel(ADMIN_USERNAME, &Powerlevel::Unapproved).unwrap();
+
     let app = app().await;
-    let whoamiresult = app.oneshot(
-        Request::builder()
+    let whoamiresult = app
+        .clone()
+        .oneshot(
+            Request::builder()
                 .method("GET")
                 .uri("/api/v1/authorized/account/whoami")
-                .header("Key", session.secret)
+                .header("Key", &session.secret)
                 .body(Body::empty())
                 .unwrap(),
-    ).await.unwrap();
-    assert_eq!(whoamiresult.status(), StatusCode::OK);
+        )
+        .await
+        .unwrap();
+    assert_eq!(whoamiresult.status(), StatusCode::UNAUTHORIZED);
+
+    cli::user::change_powerlevel(ADMIN_USERNAME, &Powerlevel::Owner).unwrap();
+
+    let whoamiresult_allowed = app
+        .oneshot(
+            Request::builder()
+                .method("GET")
+                .uri("/api/v1/authorized/account/whoami")
+                .header("Key", &session.secret)
+                .body(Body::empty())
+                .unwrap(),
+        )
+        .await
+        .unwrap();
+    assert_eq!(whoamiresult_allowed.status(), StatusCode::OK);
 }
 
 #[tokio::test]
