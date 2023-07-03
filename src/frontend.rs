@@ -14,7 +14,7 @@ pub fn routes() -> ApiRouter {
 }
 
 async fn index() -> Html<&'static str> {
-    Html(include_str!("../web/dist/web/index.html"))
+    Html(include_str!("../web/dist/index.html"))
 }
 
 async fn static_handler(uri: Uri) -> impl IntoResponse {
@@ -35,13 +35,13 @@ async fn static_handler(uri: Uri) -> impl IntoResponse {
                 .body(body)
                 .unwrap()
         }
-        // return index.html, angular router will handle the rest
+        // return index.html, vue router will handle the rest
         None => index().await.into_response(),
     }
 }
 
 #[derive(RustEmbed)]
-#[folder = "web/dist/web/"]
+#[folder = "web/dist/"]
 struct Assets;
 
 #[cfg(test)]
