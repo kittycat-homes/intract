@@ -6,6 +6,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - name: build frontend
+        run: bash build_frontend.sh
       - uses: Swatinem/rust-cache@v2
         with:
           shared-key: "intract"

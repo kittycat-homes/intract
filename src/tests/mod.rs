@@ -55,21 +55,6 @@ async fn register_owner() -> Response {
     response.await
 }
 
-#[test]
-#[serial]
-fn enable_tracing() {
-    let d: Directive = LevelFilter::DEBUG.into();
-    // enable tracing
-    SubscriberBuilder::default()
-        .pretty()
-        .with_env_filter(
-            EnvFilter::builder()
-                .with_default_directive(d)
-                .from_env_lossy(),
-        )
-        .init();
-}
-
 #[tokio::test]
 async fn integration_test() {
     register_new_owner().await;

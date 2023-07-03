@@ -33,6 +33,8 @@ pub mod pass;
 pub mod schema;
 /// state for the app
 pub mod state;
+/// serves the frontend
+pub mod frontend;
 
 /// tests for CI/CD,
 /// these are not meant for ci/cd.
@@ -94,6 +96,7 @@ async fn generate_server() -> Result<axum::Router, Box<dyn std::error::Error>> {
     Ok(ApiRouter::new()
         .nest_api_service("/api", api::routes(state.clone()))
         .nest_api_service("/docs", docs::docs_routes(state.clone()))
+        .nest_api_service("/", frontend::routes())
         .finish_api_with(&mut api, docs::add_api_docs)
         .layer(Extension(Arc::new(api)))
         .layer(TimeoutLayer::new(Duration::from_secs(20)))

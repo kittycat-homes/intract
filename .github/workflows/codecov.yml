@@ -32,6 +32,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+      - name: build frontend
+        run: bash build_frontend.sh
       - name: rust-tarpaulin
         uses: actions-rs/tarpaulin@v0.1
         with:
