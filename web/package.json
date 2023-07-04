@@ -6,7 +6,7 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "swagger-gen": "swagger-codegen3 generate -l typescript-fetch -i http://localhost:3000/docs/openapi.json -o src/swagger/"
+    "swagger-gen": "openapi-generator-cli generate -g typescript-fetch -i http://localhost:3000/docs/openapi.json -o src/swagger/"
   },
   "dependencies": {
     "@vue/cli": "^5.0.8",
@@ -14,8 +14,7 @@
     "pinia": "^2.1.4",
     "register-service-worker": "^1.7.2",
     "vue": "^3.2.13",
-    "vue-router": "^4.0.3",
-    "vuex": "^4.0.0"
+    "vue-router": "^4.0.3"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.4.0",
@@ -25,7 +24,6 @@
     "@vue/cli-plugin-pwa": "~5.0.0",
     "@vue/cli-plugin-router": "~5.0.0",
     "@vue/cli-plugin-typescript": "~5.0.0",
-    "@vue/cli-plugin-vuex": "~5.0.0",
     "@vue/cli-service": "~5.0.0",
     "@vue/eslint-config-typescript": "^9.1.0",
     "eslint": "^7.32.0",
