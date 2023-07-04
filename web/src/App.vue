@@ -13,7 +13,7 @@ import NavBar from "@/components/NavBar.vue";
 #app {
   height: 100vh;
   width: 100vw;
-  overflow-y: scroll;
+  overflow-y: clip;
   display: flex;
   flex-direction: column;
 }
@@ -27,22 +27,10 @@ import NavBar from "@/components/NavBar.vue";
 #router-view {
   flex-grow: 1;
   background-color: var(--black);
-  overflow: scroll;
-}
-
-#nav-bar {
-  flex-shrink: 100;
+  overflow-y: scroll;
 }
 
 nav {
   background-color: var(--primary-accent);
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
-    }
-  }
 }
 </style>
