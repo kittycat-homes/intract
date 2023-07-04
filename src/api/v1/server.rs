@@ -29,11 +29,14 @@ struct ServerInfo {
     /// the url the server is running on,
     /// something like `https://example.com`
     url: String,
+    /// name of the server, this can be anything
+    name: String,
 }
 
 async fn info() -> Json<ServerInfo> {
     Json(ServerInfo {
         min_password_length: CONFIG.server.min_password_size,
         url: CONFIG.server.url.clone(),
+        name: CONFIG.server.name.clone(),
     })
 }

@@ -26,6 +26,12 @@ export interface ServerInfo {
      */
     minPasswordLength: any | null;
     /**
+     * name of the server, this can be anything
+     * @type {any}
+     * @memberof ServerInfo
+     */
+    name: any | null;
+    /**
      * the url the server is running on, something like `https://example.com`
      * @type {any}
      * @memberof ServerInfo
@@ -39,6 +45,7 @@ export interface ServerInfo {
 export function instanceOfServerInfo(value: object): boolean {
     let isInstance = true;
     isInstance = isInstance && "minPasswordLength" in value;
+    isInstance = isInstance && "name" in value;
     isInstance = isInstance && "url" in value;
 
     return isInstance;
@@ -55,6 +62,7 @@ export function ServerInfoFromJSONTyped(json: any, ignoreDiscriminator: boolean)
     return {
         
         'minPasswordLength': json['min_password_length'],
+        'name': json['name'],
         'url': json['url'],
     };
 }
@@ -69,6 +77,7 @@ export function ServerInfoToJSON(value?: ServerInfo | null): any {
     return {
         
         'min_password_length': value.minPasswordLength,
+        'name': value.name,
         'url': value.url,
     };
 }

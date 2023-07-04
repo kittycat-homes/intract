@@ -47,6 +47,7 @@ impl Default for AppConfig {
     fn default() -> Self {
         Self {
             server: Server {
+                name: String::from("intract"),
                 socket: "[::]:3000".into(),
                 url: "http://localhost:3000".into(),
                 min_password_size: 8,
@@ -101,6 +102,11 @@ pub struct Server {
      * on startup. that would invalidate all your passwords
      */
     pub argon2_pepper: String,
+
+    /**
+     * what name to display for this instance
+     */
+    pub name: String,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
