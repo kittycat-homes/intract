@@ -15,7 +15,7 @@ import NavBar from "@/components/NavBar.vue";
   width: 100vw;
   overflow-y: clip;
   display: flex;
-  flex-direction: column;
+  flex-direction: column-reverse;
 }
 
 @media (orientation: landscape) {
