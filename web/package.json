@@ -5,10 +5,13 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "swagger-gen": "swagger-codegen3 generate -l typescript-fetch -i http://localhost:3000/docs/openapi.json -o src/swagger/"
   },
   "dependencies": {
+    "@vue/cli": "^5.0.8",
     "core-js": "^3.8.3",
+    "pinia": "^2.1.4",
     "register-service-worker": "^1.7.2",
     "vue": "^3.2.13",
     "vue-router": "^4.0.3",
