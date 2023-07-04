@@ -19,7 +19,7 @@ export const useServerInfoStore = defineStore({
       if (this.info != null) {
         return;
       }
-      this.info = await new ServerApi(conf).serverInfo().finally(() => {
+      this.info = await new ServerApi(conf()).serverInfo().finally(() => {
         this.loading = false;
       });
     },
