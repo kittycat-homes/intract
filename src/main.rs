@@ -7,7 +7,7 @@ use axum::Extension;
 use cli::CLI;
 use tokio::signal;
 use tower_http::{compression::CompressionLayer, timeout::TimeoutLayer};
-use tracing::{info};
+use tracing::info;
 use tracing_subscriber::{fmt::SubscriberBuilder, EnvFilter};
 
 /// this is where the api is defined.
@@ -23,6 +23,8 @@ pub mod db;
 mod docs;
 /// extractors for aide
 pub mod extractors;
+/// serves the frontend
+pub mod frontend;
 /// middleware for checking user authentication
 /// and powerlevel
 pub mod middleware;
@@ -33,8 +35,6 @@ pub mod pass;
 pub mod schema;
 /// state for the app
 pub mod state;
-/// serves the frontend
-pub mod frontend;
 
 /// tests for CI/CD,
 /// these are not meant for ci/cd.
@@ -100,7 +100,13 @@ async fn generate_server() -> Result<axum::Router, Box<dyn std::error::Error>> {
         .finish_api_with(&mut api, docs::add_api_docs)
         .layer(Extension(Arc::new(api)))
         .layer(TimeoutLayer::new(Duration::from_secs(20)))
-        .layer(CompressionLayer::new())
+        .layer(
+            CompressionLayer::new()
+                .gzip(true)
+                // we have as much cpu as we want really
+                // since rust is kinda overkill anyway
+                .quality(tower_http::CompressionLevel::Best),
+        )
         .with_state(state))
 }
 

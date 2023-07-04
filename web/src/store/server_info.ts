@@ -19,7 +19,6 @@ export const useServerInfoStore = defineStore({
       if (this.info != null) {
         return;
       }
-      console.log("fetching server info");
       this.info = await new ServerApi(conf).serverInfo().finally(() => {
         this.loading = false;
       });
