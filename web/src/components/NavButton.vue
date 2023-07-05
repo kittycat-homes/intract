@@ -1,6 +1,5 @@
 <template>
   <router-link class="link" :to="link">
-    <v-icon class="icon" scale="1.4" :name="icon" />
     <span>{{ name }}</span></router-link
   >
 </template>
