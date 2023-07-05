@@ -1,4 +1,7 @@
 :root {
-  --padding: 1em;
-  --small-padding: calc(var(var(--padding) / 3));
+  --fs-small: clamp(0.8rem, 0.5rem + 0.5vw, 1.1rem);
+  --fs-regular: calc(var(--fs-small) * 1.61803);
+  --fs-large: calc(var(--fs-regular) * 1.61803);
+  --fs-xl: calc(var(--fs-large) * 1.61803);
+  --pad-size: calc(((var(--fs-small) * 0.618) * 0.618) * 0.618);
 }

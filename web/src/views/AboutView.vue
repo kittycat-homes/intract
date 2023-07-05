@@ -7,8 +7,8 @@ fetchServerInfo();
 </script>
 
 <template>
-  <h1>about</h1>
   <div class="about">
+    <h1>about</h1>
     <h1 v-if="loading">loading</h1>
     <h1 v-else>{{ info }}</h1>
   </div>
@@ -16,6 +16,10 @@ fetchServerInfo();
 
 <style scoped>
 h1 {
-  font-size: var(--fs-xl);
+  font-size: var(--fs-large);
+}
+
+.about {
+  background-color: var(--light-orange);
 }
 </style>

@@ -35,6 +35,8 @@ const buttons = [
 nav {
   display: flex;
   flex-direction: row;
+  gap: var(--pad-size);
+  padding: var(--pad-size);
 }
 
 @media (orientation: landscape) {

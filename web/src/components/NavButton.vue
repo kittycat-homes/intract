@@ -24,10 +24,13 @@ const { name, link } = toRefs(props);
 }
 
 .link::v-deep svg {
-  height: 2.4em;
-  width: 2.4em;
+  display: flex;
+  padding: var(--pad-size);
+  height: var(--fs-large);
+  width: var(--fs-large);
   background-color: var(--black);
   color: var(--light-orange);
+  border-radius: var(--fs-large);
 }
 
 .router-link-active::v-deep > svg,
@@ -38,5 +41,6 @@ const { name, link } = toRefs(props);
 
 .text {
   color: var(--black);
+  font-size: var(--fs-small);
 }
 </style>
