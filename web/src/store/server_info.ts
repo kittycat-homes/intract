@@ -23,7 +23,8 @@ export const useServerInfoStore = defineStore({
       }
       this.info = await new ServerApi(conf())
         .serverInfo()
-        .catch(() => {
+        .catch((error) => {
+          console.log(error);
           this.error = true;
           return null;
         })

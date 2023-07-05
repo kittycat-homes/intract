@@ -31,6 +31,8 @@ struct ServerInfo {
     url: String,
     /// name of the server, this can be anything
     name: String,
+    /// how long the username needs to be
+    min_username_length: u8,
 }
 
 async fn info() -> Json<ServerInfo> {
@@ -38,5 +40,6 @@ async fn info() -> Json<ServerInfo> {
         min_password_length: CONFIG.server.min_password_size,
         url: CONFIG.server.url.clone(),
         name: CONFIG.server.name.clone(),
+        min_username_length: CONFIG.server.min_username_length,
     })
 }

@@ -25,7 +25,7 @@ const { name, link } = toRefs(props);
 
 .link::v-deep svg {
   display: flex;
-  padding: var(--pad-size);
+  padding: var(--pad-size-small);
   height: var(--fs-large);
   width: var(--fs-large);
   background-color: var(--black);

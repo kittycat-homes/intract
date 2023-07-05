@@ -89,7 +89,9 @@ async fn register(
     State(state): State<AppState>,
     Json(form): Json<RegisterData>,
 ) -> impl IntoApiResponse {
-    if form.password.len() < CONFIG.server.min_password_size as usize {
+    if form.password.chars().count() < CONFIG.server.min_password_size as usize
+        || form.username.chars().count() < CONFIG.server.min_username_length as usize
+    {
         return Err(StatusCode::BAD_REQUEST);
     }
 
