@@ -1,4 +1,5 @@
 import { conf } from "@/api";
+import router from "@/router";
 import { AccountApi, Session } from "@/swagger";
 import { defineStore } from "pinia";
 
@@ -26,6 +27,7 @@ export const useSessionInfoStore = defineStore({
         .then((value) => {
           this.error = false;
           this.session = value;
+          router.push("/");
         })
         .catch(() => {
           this.error = true;
