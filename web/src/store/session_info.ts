@@ -18,12 +18,22 @@ export const useSessionInfoStore = defineStore({
     } as SessionInfoState),
   actions: {
     async login(password: string, username: string) {
-      if (this.session != null) {
-        return;
-      }
-      new AccountApi(conf()).login({
-        loginData: { password: password, username: username },
-      });
+      this.loading = true;
+      await new AccountApi(conf())
+        .login({
+          loginData: { password: password, username: username },
+        })
+        .then((value) => {
+          this.error = false;
+          this.session = value;
+        })
+        .catch(() => {
+          this.error = true;
+          return null;
+        })
+        .finally(() => {
+          this.loading = false;
+        });
     },
   },
 });

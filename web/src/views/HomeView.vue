@@ -1,3 +1,3 @@
 <template>
-  <p>hehe</p>
+  <LoadingSpinner />
 </template>

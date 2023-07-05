@@ -13,7 +13,7 @@ export const useServerInfoStore = defineStore({
   state: () =>
     ({
       error: false,
-      loading: true,
+      loading: false,
       info: null,
     } as ServerInfoStoreState),
   actions: {
@@ -21,10 +21,10 @@ export const useServerInfoStore = defineStore({
       if (this.info != null) {
         return;
       }
+      this.loading = true;
       this.info = await new ServerApi(conf())
         .serverInfo()
-        .catch((error) => {
-          console.log(error);
+        .catch(() => {
           this.error = true;
           return null;
         })

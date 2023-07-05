@@ -23,7 +23,7 @@ const { name, link } = toRefs(props);
   align-items: center;
 }
 
-.link::v-deep svg {
+.link:deep svg {
   display: flex;
   padding: var(--pad-size-small);
   height: var(--fs-large);
@@ -33,8 +33,8 @@ const { name, link } = toRefs(props);
   border-radius: var(--fs-large);
 }
 
-.router-link-active::v-deep > svg,
-.link:hover::v-deep > svg {
+.router-link-active:deep > svg,
+.link:hover:deep > svg {
   color: var(--black);
   background-color: var(--light-orange);
 }

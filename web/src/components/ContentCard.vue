@@ -12,14 +12,18 @@
   background-color: var(--light-orange);
   border-radius: var(--radius);
   flex: 1;
+  gap: var(--pad-size);
 }
 
 .card {
-  &::v-deep p {
+  &:deep p {
     font-size: var(--fs-regular);
   }
-  &::v-deep h1 {
+  &:deep h1 {
     font-size: var(--fs-xl);
+  }
+  &:deep * {
+    color: var(--black);
   }
 }
 </style>
