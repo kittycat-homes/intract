@@ -5,15 +5,18 @@ import NavBar from "@/components/NavBar.vue";
 <template>
   <div id="app">
     <NavBar id="nav-bar" />
-    <router-view id="router-view" />
+    <div class="router-view">
+      <router-view />
+    </div>
   </div>
 </template>
 
-<style lang="scss">
+<style>
 #app {
   height: 100vh;
   width: 100vw;
-  overflow-y: clip;
+  overflow-y: hidden;
+  overflow-x: hidden;
   display: flex;
   flex-direction: column-reverse;
 }
@@ -24,10 +27,12 @@ import NavBar from "@/components/NavBar.vue";
   }
 }
 
-#router-view {
-  flex-grow: 1;
+.router-view {
   background-color: var(--black);
   overflow-y: scroll;
+  overflow-x: hidden;
+  flex-grow: 1;
+  flex-direction: column;
 }
 
 nav {
