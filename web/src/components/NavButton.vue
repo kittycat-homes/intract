@@ -1,6 +1,7 @@
 <template>
   <router-link class="link" :to="link">
-    <span>{{ name }}</span></router-link
+    <slot name="icon"></slot>
+    <span class="text">{{ name }}</span></router-link
   >
 </template>
 
@@ -10,26 +11,32 @@ import { toRefs } from "vue";
 const props = defineProps<{
   name: string;
   link: string;
-  icon: string;
 }>();
-const { name, link, icon } = toRefs(props);
+const { name, link } = toRefs(props);
 </script>
 
-<style>
+<style scoped>
 .link {
+  text-decoration: none;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-.icon {
+.link::v-deep svg {
+  height: 2.4em;
+  width: 2.4em;
   background-color: var(--black);
   color: var(--light-orange);
 }
 
-.router-link-active .icon,
-.link:hover > .icon {
+.router-link-active::v-deep > svg,
+.link:hover::v-deep > svg {
   color: var(--black);
   background-color: var(--light-orange);
+}
+
+.text {
+  color: var(--black);
 }
 </style>
