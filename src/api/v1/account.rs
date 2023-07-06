@@ -213,3 +213,29 @@ async fn login(
     // return the secret
     Ok(Json(session))
 }
+
+#[cfg(test)]
+mod test {
+    use hyper::{Body, Request, StatusCode};
+    use tower::ServiceExt;
+
+    use crate::{api::v1::account::LoginData, generate_server};
+
+    #[tokio::test]
+    async fn check_empty_pass() {
+        let b = serde_json::json!(LoginData {
+            username: String::from("meowmeowmewmeow"),
+            password: String::new(),
+            description: None
+        })
+        .to_string();
+
+        let app = generate_server().await.unwrap();
+        let result = app
+            .oneshot(Request::builder().body(Body::from(b)).unwrap())
+            .await
+            .unwrap();
+
+        assert_eq!(result.status(), StatusCode::BAD_REQUEST);
+    }
+}
