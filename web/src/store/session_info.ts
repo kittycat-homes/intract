@@ -11,6 +11,7 @@ type SessionInfoState = {
 
 export const useSessionInfoStore = defineStore({
   id: "session-info",
+  persist: true,
   state: () =>
     ({
       error: false,

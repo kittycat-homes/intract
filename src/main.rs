@@ -2,7 +2,7 @@ use std::{sync::Arc, time::Duration};
 
 use crate::{config::CONFIG, state::InnerAppState};
 use aide::{axum::ApiRouter, openapi::OpenApi};
-use axum::Extension;
+use axum::{extract::DefaultBodyLimit, Extension};
 
 use cli::CLI;
 use tokio::signal;
@@ -100,6 +100,7 @@ async fn generate_server() -> Result<axum::Router, Box<dyn std::error::Error>> {
         .finish_api_with(&mut api, docs::add_api_docs)
         .layer(Extension(Arc::new(api)))
         .layer(TimeoutLayer::new(Duration::from_secs(20)))
+        .layer(DefaultBodyLimit::max(2000))
         .layer(
             CompressionLayer::new()
                 .gzip(true)

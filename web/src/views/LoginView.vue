@@ -39,12 +39,16 @@ import { ref } from "@vue/runtime-dom";
 import BaseInput from "@/components/BaseInput.vue";
 import { useSessionInfoStore } from "@/store/session_info";
 import ErrorNotice from "@/components/ErrorNotice.vue";
+import router from "@/router";
+import { useUserStore } from "@/store/user";
 
 // stores
 const server = useServerInfoStore();
 const session = useSessionInfoStore();
+const user = useUserStore();
 const { fetchServerInfo } = useServerInfoStore();
 const { login } = useSessionInfoStore();
+const { whoami } = useUserStore();
 
 // get info
 fetchServerInfo();
@@ -56,6 +60,23 @@ const password = ref("");
 const sendLogin = () => {
   login(password.value, username.value);
 };
+
+const leave_page_cuz_logged_in = () => {
+  if (session.session != null && user.info != null) {
+    router.push("/");
+  }
+};
+
+leave_page_cuz_logged_in();
+
+session.$subscribe((_mutation, _state) => {
+  whoami();
+  leave_page_cuz_logged_in();
+});
+
+user.$subscribe((_mutation, _state) => {
+  leave_page_cuz_logged_in();
+});
 </script>
 
 <style scoped>

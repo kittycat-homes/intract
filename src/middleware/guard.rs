@@ -37,7 +37,7 @@ pub async fn guard_user<T>(
         .or(Err(StatusCode::SERVICE_UNAVAILABLE))?;
 
     let user: User = sessions::table
-        .select(secret.eq(token))
+        .filter(secret.eq(token))
         .inner_join(users::table)
         .select(User::as_select())
         .first::<User>(&mut conn)
