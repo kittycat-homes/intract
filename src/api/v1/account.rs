@@ -234,6 +234,7 @@ mod test {
         let result = app
             .oneshot(
                 Request::builder()
+                    .method("POST")
                     .uri("/api/v1/account/register")
                     .body(Body::from(b))
                     .unwrap(),
