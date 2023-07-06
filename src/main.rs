@@ -23,6 +23,8 @@ pub mod db;
 mod docs;
 /// extractors for aide
 pub mod extractors;
+/// for parsing feeds and similar tasks
+pub mod feeds;
 /// serves the frontend
 pub mod frontend;
 /// middleware for checking user authentication

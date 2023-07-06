@@ -1,5 +1,11 @@
 <script setup lang="ts">
 import NavBar from "@/components/NavBar.vue";
+import { useUserStore } from "./store/user";
+import { useSessionInfoStore } from "./store/session_info";
+import LoadingSpinner from "./components/LoadingSpinner.vue";
+
+let userStore = useUserStore();
+let sessionStore = useSessionInfoStore();
 </script>
 
 <template>
@@ -19,6 +25,7 @@ import NavBar from "@/components/NavBar.vue";
   overflow-x: hidden;
   display: flex;
   flex-direction: column-reverse;
+  background-color: var(--black);
 }
 
 @media (orientation: landscape) {

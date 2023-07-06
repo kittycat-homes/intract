@@ -1,6 +1,6 @@
 <template>
   <router-link class="link" :to="link">
-    <slot name="icon"></slot>
+    <slot></slot>
     <span class="text">{{ name }}</span></router-link
   >
 </template>

@@ -1,7 +1,7 @@
 use clap::ValueEnum;
 use diesel::prelude::*;
 use schemars::JsonSchema;
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
 #[derive(
@@ -55,7 +55,7 @@ pub struct User {
     pub username: String,
     /**
      * should be more prominently featured than username
-    */
+     */
     pub display_name: Option<String>,
     #[serde(skip)]
     pub signup_reason: Option<String>,
@@ -102,4 +102,42 @@ pub struct Session {
      * once the expiry date has passed.
      */
     pub expires_at: std::time::SystemTime,
+}
+
+#[derive(Queryable, Selectable, Serialize, Deserialize, JsonSchema, Insertable, Default)]
+#[diesel(table_name= crate::schema::feeds)]
+#[diesel(check_for_backend(diesel::pg::Pg))]
+pub struct Feed {
+    /// url of the feed
+    pub url: String,
+    /// title of the feed
+    pub title: Option<String>,
+    /// description of the feed
+    pub description: Option<String>,
+    /// link to the feed
+    pub link: Option<String>,
+    /// if this feed was made by someone on this
+    /// instance then this should be some
+    pub creator_id: Option<Uuid>,
+    /// link to an image specified for this feed
+    pub image_url: Option<String>,
+    /// title of that image, can be used for alt text
+    pub image_text: Option<String>,
+}
+
+#[derive(Queryable, Selectable, Serialize, Deserialize, JsonSchema, Insertable, Default)]
+#[diesel(table_name= crate::schema::feed_items)]
+#[diesel(check_for_backend(diesel::pg::Pg))]
+pub struct FeedItem {
+    id: Uuid,
+    #[serde(skip)]
+    feed_url: String,
+    link: Option<String>,
+    guid: Option<String>,
+    description: Option<String>,
+    image_url: Option<String>,
+    image_text: Option<String>,
+    media_description: Option<String>,
+    author_name: Option<String>,
+    title: Option<String>,
 }
