@@ -17,9 +17,7 @@ const userStore = useUserStore();
 if (userStore.info === null) {
   router.push("/login");
 }
-</script>
 
-<script lang="ts">
 const logout = () => {
   localStorage.clear();
   location.reload();
