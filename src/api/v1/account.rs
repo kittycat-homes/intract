@@ -222,7 +222,7 @@ mod test {
     use crate::{api::v1::account::LoginData, generate_server};
 
     #[tokio::test]
-    async fn check_empty_pass() {
+    async fn register_empty_pass() {
         let b = serde_json::json!(LoginData {
             username: String::from("meowmeowmewmeow"),
             password: String::new(),
@@ -232,7 +232,12 @@ mod test {
 
         let app = generate_server().await.unwrap();
         let result = app
-            .oneshot(Request::builder().body(Body::from(b)).unwrap())
+            .oneshot(
+                Request::builder()
+                    .uri("/api/v1/account/register")
+                    .body(Body::from(b))
+                    .unwrap(),
+            )
             .await
             .unwrap();
 
