@@ -25,7 +25,7 @@ pub fn routes(state: AppState) -> ApiRouter {
                     .tag("feed")
             }),
         )
-        .with_state(state.clone())
+        .with_state(state)
 }
 
 #[derive(JsonSchema, Deserialize)]
@@ -38,7 +38,7 @@ pub struct FollowFeedInputData {
 }
 
 async fn add_feed(
-    Extension(current_user): Extension<User>,
+    Extension(_current_user): Extension<User>,
     Json(input): Json<FollowFeedInputData>,
 ) -> Result<Json<FeedData>, StatusCode> {
     let feed_data = feeds::parse_feed_from_url(&input.uri)
