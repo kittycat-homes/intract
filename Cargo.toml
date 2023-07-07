@@ -1,5 +1,5 @@
 [package]
-description = "intract is an rss reader for the modern web"
+description = "intract is an rss reader and generator for the modern web"
 edition = "2021"
 name = "intract"
 version = "0.0.0"

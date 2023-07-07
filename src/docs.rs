@@ -1,4 +1,4 @@
-use std::{sync::Arc};
+use std::sync::Arc;
 
 use crate::{config::CONFIG, extractors::Json, state::AppState};
 use aide::{
@@ -20,17 +20,11 @@ pub fn docs_routes(_state: AppState) -> ApiRouter {
     aide::gen::infer_responses(true);
 
     ApiRouter::new()
-        .api_route(
+        .route(
             "/redoc",
-            get_with(
-                Redoc::new("/docs/openapi.json")
-                    .with_title("intract redoc")
-                    .axum_handler(),
-                |docs| {
-                    docs.description("show the redoc openapi viewer")
-                        .tag("docs")
-                },
-            ),
+            get(Redoc::new("/docs/openapi.json")
+                .with_title("intract redoc")
+                .axum_handler()),
         )
         .route("/openapi.json", get(serve_docs))
 }
@@ -42,7 +36,7 @@ async fn serve_docs(Extension(api): Extension<Arc<OpenApi>>) -> impl IntoApiResp
 
 /// add additional info to api docs
 pub fn add_api_docs(api: TransformOpenApi) -> TransformOpenApi {
-    let security_extensions : IndexMap<String, Value> = IndexMap::new();
+    let security_extensions: IndexMap<String, Value> = IndexMap::new();
 
     api.title(crate_name!())
         .contact(Contact {

@@ -1,8 +1,12 @@
 apis/AccountApi.ts
-apis/DocsApi.ts
+apis/FeedApi.ts
 apis/ServerApi.ts
 apis/index.ts
 index.ts
+models/Feed.ts
+models/FeedData.ts
+models/FeedItem.ts
+models/FollowFeedInputData.ts
 models/LoginData.ts
 models/RegisterData.ts
 models/ServerInfo.ts

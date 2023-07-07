@@ -2,7 +2,7 @@
 /* eslint-disable */
 /**
  * intract
- * intract is an rss reader for the modern web
+ * intract is an rss reader and generator for the modern web
  *
  * The version of the OpenAPI document: 0.0.0
  * 
