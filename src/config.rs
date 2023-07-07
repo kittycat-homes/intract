@@ -51,7 +51,7 @@ impl Default for AppConfig {
                 socket: "[::]:3000".into(),
                 url: "http://localhost:3000".into(),
                 min_password_size: 8,
-                min_username_length: 8,
+                min_username_length: 3,
                 argon2_pepper: Alphanumeric.sample_string(&mut rand::thread_rng(), 64),
             },
             database: Database {
@@ -98,7 +98,7 @@ pub struct Server {
 
     /**
      * how long a username should be at minimum
-    */
+     */
     pub min_username_length: u8,
 
     /**

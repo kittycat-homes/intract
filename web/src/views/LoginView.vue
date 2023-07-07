@@ -36,7 +36,7 @@
           "
           >password too short</ErrorNotice
         >
-        <button>login</button>
+        <PrimaryButton><ArrowLeftOnRectangleIcon />login</PrimaryButton>
       </form>
       <div v-if="session.status != null">
         <ErrorNotice>{{ generate_error_message() }}</ErrorNotice>
@@ -56,6 +56,8 @@ import { useSessionInfoStore } from "@/store/session_info";
 import ErrorNotice from "@/components/ErrorNotice.vue";
 import router from "@/router";
 import { useUserStore } from "@/store/user";
+import PrimaryButton from "@/components/PrimaryButton.vue";
+import { ArrowLeftOnRectangleIcon } from "@heroicons/vue/24/solid";
 
 // stores
 const server = useServerInfoStore();
@@ -83,20 +85,6 @@ const leave_page_cuz_logged_in = () => {
 };
 
 leave_page_cuz_logged_in();
-
-const username_valid = (): boolean => {
-  if (username.value < server.info?.minUsernameLength) {
-    return false;
-  }
-  return true;
-};
-
-const password_valid = (): boolean => {
-  if (password.value < server.info?.minPasswordLength) {
-    return true;
-  }
-  return false;
-};
 
 session.$subscribe((_mutation, _state) => {
   whoami();
