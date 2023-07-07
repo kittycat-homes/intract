@@ -3,24 +3,33 @@
     <label for="id">
       {{ label }}
     </label>
-    <input
-      class="in"
-      :id="id"
-      :type="secret_actual_type"
-      :value="modelValue"
-      :placeholder="placeholder"
-      @input="
-        emit('update:modelValue', ($event.target as HTMLInputElement).value)
-      "
-    />
-    <button v-if="type === 'password'" @click.prevent="toggle_password">
-      {{ secret_actual_type === "password" ? "show" : "hide" }}
-    </button>
+    <div class="button-and-input">
+      <input
+        class="in"
+        :id="id"
+        :type="secret_actual_type"
+        :value="modelValue"
+        :placeholder="placeholder"
+        @input="
+          emit('update:modelValue', ($event.target as HTMLInputElement).value)
+        "
+      />
+      <button
+        class="show-password-button"
+        v-if="type === 'password'"
+        @click.prevent="toggle_password"
+      >
+        <EyeIcon v-if="secret_actual_type === 'password'" class="icon" />
+        <EyeSlashIcon v-else class="icon" />
+        {{ secret_actual_type === "password" ? "show" : "hide" }}
+      </button>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref } from "@vue/runtime-dom";
+import { EyeSlashIcon, EyeIcon } from "@heroicons/vue/24/solid";
 
 const props = defineProps({
   label: {
@@ -91,8 +100,8 @@ input {
   border-radius: calc((var(--radius) - var(--pad-size)) - var(--border-width));
   border-style: none;
   font-size: var(--fs-regular);
-  flex-grow: 1;
   color: var(--black);
+  flex-grow: 1;
 }
 
 input::placeholder {
@@ -115,5 +124,35 @@ label {
   font-size: var(--fs-regular);
   margin-left: var(--pad-size);
   margin-top: var(--pad-size);
+}
+
+.show-password-button {
+  background-color: var(--light-orange-clickable);
+  border: none;
+  padding: var(--pad-size);
+  border-radius: calc((var(--radius) - var(--pad-size)) - var(--border-width));
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--pad-size);
+  font-size: var(--fs-small);
+}
+
+.icon {
+  width: var(--fs-regular);
+  height: var(--fs-regular);
+}
+
+.show-password-button:focus,
+.show-password-button:hover {
+  background-color: var(--light-orange-hover);
+  cursor: pointer;
+}
+
+.button-and-input {
+  display: flex;
+  flex-direction: row;
+  flex-grow: 1;
+  gap: var(--pad-size);
 }
 </style>

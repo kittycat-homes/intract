@@ -7,13 +7,21 @@
         don't have an account yet?
         <router-link to="register">register</router-link>
       </p>
-      <form @submit.prevent="sendLogin">
+      <form @submit.prevent="send_login">
         <BaseInput
           id="login-username"
           label="username"
           placeholder="xxXCoolGamer42Xxx"
           v-model="username"
         />
+        <ErrorNotice
+          v-if="
+            username.length < server.info.minPasswordLength &&
+            username.length > 0
+          "
+          >username too short</ErrorNotice
+        >
+
         <BaseInput
           id="login-pass"
           type="password"
@@ -21,9 +29,16 @@
           placeholder="hunter2"
           v-model="password"
         />
+        <ErrorNotice
+          v-if="
+            password.length < server.info.minPasswordLength &&
+            password.length > 0
+          "
+          >password too short</ErrorNotice
+        >
         <button>login</button>
       </form>
-      <div v-if="session.status != null || session.status != 200">
+      <div v-if="session.status != null">
         <ErrorNotice>{{ generate_error_message() }}</ErrorNotice>
       </div>
     </ContentCard>
@@ -57,7 +72,7 @@ fetchServerInfo();
 const username = ref("");
 const password = ref("");
 
-const sendLogin = () => {
+const send_login = () => {
   login(password.value, username.value);
 };
 
@@ -68,6 +83,20 @@ const leave_page_cuz_logged_in = () => {
 };
 
 leave_page_cuz_logged_in();
+
+const username_valid = (): boolean => {
+  if (username.value < server.info?.minUsernameLength) {
+    return false;
+  }
+  return true;
+};
+
+const password_valid = (): boolean => {
+  if (password.value < server.info?.minPasswordLength) {
+    return true;
+  }
+  return false;
+};
 
 session.$subscribe((_mutation, _state) => {
   whoami();
