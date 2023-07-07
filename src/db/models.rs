@@ -116,9 +116,6 @@ pub struct Feed {
     pub description: Option<String>,
     /// link to the feed
     pub link: Option<String>,
-    /// if this feed was made by someone on this
-    /// instance then this should be some
-    pub creator_id: Option<Uuid>,
     /// link to an image specified for this feed
     pub image_url: Option<String>,
     /// title of that image, can be used for alt text

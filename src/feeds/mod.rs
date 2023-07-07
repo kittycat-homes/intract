@@ -1,3 +1,4 @@
+use feed_rs::model::Image;
 use schemars::JsonSchema;
 use serde::Serialize;
 
@@ -16,6 +17,7 @@ pub async fn parse_feed_from_url(uri: &str) -> Result<FeedData, Box<dyn std::err
         description: feed.clone().description.map(|v| v.content),
         link: feed.links.first().map(|v| v.clone().href),
         image_url: get_image_url(&feed),
+        image_text: get_image_text(&feed),
         ..Default::default()
     };
 
@@ -25,10 +27,35 @@ pub async fn parse_feed_from_url(uri: &str) -> Result<FeedData, Box<dyn std::err
     })
 }
 
+/// get an image from a feed, prefers big image over icon
+fn get_image(feed: &feed_rs::model::Feed) -> Option<Image> {
+    feed.logo
+        .clone()
+        .map(|v| v.clone())
+        .or(feed.icon.clone().map(|v| v.clone()))
+}
+
+/// get image url for a feed
 fn get_image_url(feed: &feed_rs::model::Feed) -> Option<String> {
-    if let Some(image) = feed.logo.clone().or(feed.icon.clone()) {
-        return Some(image.uri);
+    get_image(feed).map(|img| img.uri)
+}
+
+/// get text of an image, prefers description over title
+fn get_image_text(feed: &feed_rs::model::Feed) -> Option<String> {
+    let img = get_image(feed);
+    if img.is_none() {
+        return None;
     }
+    let img = img.unwrap();
+
+    if let Some(description) = &img.description {
+        return Some(description.into());
+    }
+
+    if let Some(title) = &img.title {
+        return Some(title.into());
+    }
+
     None
 }
 

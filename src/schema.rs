@@ -41,7 +41,6 @@ diesel::table! {
         title -> Nullable<Text>,
         description -> Nullable<Text>,
         link -> Nullable<Text>,
-        creator_id -> Nullable<Uuid>,
         image_url -> Nullable<Text>,
         image_text -> Nullable<Text>,
     }
@@ -90,7 +89,6 @@ diesel::table! {
 diesel::joinable!(feed_items -> feeds (feed_url));
 diesel::joinable!(feed_items_have_categories -> categories (category_name));
 diesel::joinable!(feed_items_have_categories -> feed_items (feed_item_id));
-diesel::joinable!(feeds -> users (creator_id));
 diesel::joinable!(feeds_have_categories -> categories (category_name));
 diesel::joinable!(feeds_have_categories -> feeds (feed_url));
 diesel::joinable!(sessions -> users (user_id));
