@@ -25,7 +25,7 @@ export const useUserStore = defineStore({
           (value) => {
             this.info = value;
           },
-          (_error) => {
+          (error) => {
             this.error = true;
           }
         )

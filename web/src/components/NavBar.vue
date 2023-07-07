@@ -1,6 +1,7 @@
 <template>
   <nav>
     <NavButton link="/" name="home"><HomeIcon /></NavButton>
+    <NavButton link="/feeds" name="feeds"><RssIcon /></NavButton>
     <NavButton
       v-if="userStore.info != null"
       link="/me"
@@ -10,6 +11,7 @@
     <NavButton v-if="sessionStore.session === null" link="/login" name="login"
       ><ArrowRightOnRectangleIcon
     /></NavButton>
+    <NavButton link="/more" name="more"><EllipsisHorizontalIcon /></NavButton>
   </nav>
 </template>
 
@@ -19,6 +21,8 @@ import {
   HomeIcon,
   ArrowRightOnRectangleIcon,
   UserIcon,
+  EllipsisHorizontalIcon,
+  RssIcon,
 } from "@heroicons/vue/24/solid";
 import { useSessionInfoStore } from "@/store/session_info";
 import { useUserStore } from "@/store/user";

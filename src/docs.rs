@@ -2,10 +2,7 @@ use std::sync::Arc;
 
 use crate::{config::CONFIG, extractors::Json, state::AppState};
 use aide::{
-    axum::{
-        routing::{get, get_with},
-        ApiRouter, IntoApiResponse,
-    },
+    axum::{routing::get, ApiRouter, IntoApiResponse},
     openapi::{Contact, OpenApi, Server},
     redoc::Redoc,
     transform::TransformOpenApi,

@@ -1,7 +1,19 @@
 @import "./colors.scss";
 @import "./variables.scss";
 
+@font-face {
+  font-family: "atkinson";
+  src: url("../fonts/atkinson_regular.woff2");
+}
+
+@font-face {
+  font-family: "atkinson";
+  src: url("../fonts/atkinson_bold.woff2");
+  font-weight: bold;
+}
+
 * {
-    padding: 0;
-    margin: 0;
+  padding: 0;
+  margin: 0;
+  font-family: "atkinson";
 }

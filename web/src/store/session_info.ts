@@ -1,10 +1,10 @@
 import { conf } from "@/api";
 import router from "@/router";
-import { AccountApi, Session } from "@/swagger";
+import { AccountApi, ResponseError, Session } from "@/swagger";
 import { defineStore } from "pinia";
 
 type SessionInfoState = {
-  error: boolean;
+  status: number | null;
   loading: boolean;
   session: Session | null;
 };
@@ -14,29 +14,29 @@ export const useSessionInfoStore = defineStore({
   persist: true,
   state: () =>
     ({
-      error: false,
+      status: null,
       loading: false,
       session: null,
     } as SessionInfoState),
   actions: {
     async login(password: string, username: string) {
       this.loading = true;
-      await new AccountApi(conf())
-        .login({
+      try {
+        const data = await new AccountApi(conf()).loginRaw({
           loginData: { password: password, username: username },
-        })
-        .then((value) => {
-          this.error = false;
-          this.session = value;
-          router.push("/");
-        })
-        .catch(() => {
-          this.error = true;
-          return null;
-        })
-        .finally(() => {
-          this.loading = false;
         });
+        this.session = await data.value();
+        this.status = 200;
+      } catch (e) {
+        if (e instanceof ResponseError) {
+          this.status = e.response.status;
+        } else {
+          this.status = 500;
+        }
+        console.log(e);
+      } finally {
+        this.loading = false;
+      }
     },
   },
 });

@@ -23,8 +23,8 @@
         />
         <button>login</button>
       </form>
-      <div v-if="session.error">
-        <ErrorNotice>failed to log in</ErrorNotice>
+      <div v-if="session.status != null || session.status != 200">
+        <ErrorNotice>{{ generate_error_message() }}</ErrorNotice>
       </div>
     </ContentCard>
   </ContentBox>
@@ -77,6 +77,22 @@ session.$subscribe((_mutation, _state) => {
 user.$subscribe((_mutation, _state) => {
   leave_page_cuz_logged_in();
 });
+
+const generate_error_message = (): string => {
+  if (session.status === 404) {
+    return "nobody with this username seems to exist...";
+  }
+
+  if (session.status === 418) {
+    return "your account is still waiting for approval, come back later";
+  }
+
+  if (session.status === 401) {
+    return "this is the wrong password";
+  }
+
+  return "failed to log in";
+};
 </script>
 
 <style scoped>

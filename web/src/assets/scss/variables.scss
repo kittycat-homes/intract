@@ -1,10 +1,10 @@
 :root {
-  --fs-small: clamp(0.8rem, 0.5rem + 0.5vw, 1rem);
+  --fs-small: 0.8rem;
   --fs-regular: calc(var(--fs-small) * 1.61803);
   --fs-large: calc(var(--fs-regular) * 1.61803);
   --fs-xl: calc(var(--fs-large) * 1.61803);
-  --pad-size-small: calc(((var(--fs-small) * 0.618) * 0.618) * 1);
   --pad-size-small: calc(var(--fs-small));
   --pad-size: var(--fs-regular);
-  --radius: calc(var(--fs-large))
+  --radius: calc(var(--fs-large));
+  --border-width: calc(var(--pad-size-small) * 0.618);
 }
