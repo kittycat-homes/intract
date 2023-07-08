@@ -126,15 +126,15 @@ pub struct Feed {
 #[diesel(table_name= crate::schema::feed_items)]
 #[diesel(check_for_backend(diesel::pg::Pg))]
 pub struct FeedItem {
-    id: Uuid,
+    pub id: Uuid,
     #[serde(skip)]
-    feed_url: String,
-    link: Option<String>,
-    guid: Option<String>,
-    description: Option<String>,
-    image_url: Option<String>,
-    image_text: Option<String>,
-    media_description: Option<String>,
-    author_name: Option<String>,
-    title: Option<String>,
+    pub feed_url: String,
+    pub link: Option<String>,
+    pub guid: Option<String>,
+    pub description: Option<String>,
+    pub image_url: Option<String>,
+    pub image_text: Option<String>,
+    pub media_description: Option<String>,
+    pub author_name: Option<String>,
+    pub title: Option<String>,
 }

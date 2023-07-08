@@ -40,9 +40,9 @@ pub struct FollowFeedInputData {
 async fn add_feed(
     Extension(_current_user): Extension<User>,
     Json(input): Json<FollowFeedInputData>,
-) -> Result<Json<FeedData>, StatusCode> {
+) -> Result<Json<Vec<FeedData>>, StatusCode> {
     let feed_data = feeds::parse_feed_from_url(&input.uri)
         .await
         .or(Err(StatusCode::BAD_REQUEST))?;
-    Ok(Json(feed_data))
+    Ok(Json(vec![feed_data]))
 }
