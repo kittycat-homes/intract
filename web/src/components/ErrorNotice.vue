@@ -17,9 +17,10 @@ import { ExclamationTriangleIcon } from "@heroicons/vue/24/solid";
 }
 .error-notice {
   display: flex;
+  gap: var(--pad-size);
   align-items: center;
   padding: var(--pad-size);
-  background-color: var(--light-red);
+  background-color: var(--quaternary-accent);
   border-radius: calc(var(--radius) - var(--pad-size));
 }
 .icon {

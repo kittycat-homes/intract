@@ -15,7 +15,7 @@
   border-top-color: var(--primary-accent);
   border-left-color: var(--tertiary-accent);
   border-radius: 100%;
-  border-bottom-color: var(--quaternary--accent);
+  border-bottom-color: var(--quaternary-accent);
   animation: spin 6s linear infinite;
 }
 
