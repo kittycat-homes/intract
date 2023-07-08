@@ -1,0 +1,12 @@
+-- Your SQL goes here
+ALTER TABLE feed_items
+ADD COLUMN created_at TIMESTAMP NOT NULL;
+
+ALTER TABLE feed_items
+ADD COLUMN updated_at TIMESTAMP NOT NULL;
+
+ALTER TABLE feed_items
+ADD COLUMN synced_at TIMESTAMP NOT NULL;
+
+ALTER TABLE feeds
+ADD COLUMN last_update TIMESTAMP NOT NULL;

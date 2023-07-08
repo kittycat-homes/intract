@@ -25,6 +25,9 @@ diesel::table! {
         author_name -> Nullable<Text>,
         author_link -> Nullable<Text>,
         title -> Nullable<Text>,
+        created_at -> Timestamp,
+        updated_at -> Timestamp,
+        synced_at -> Timestamp,
     }
 }
 
@@ -43,6 +46,7 @@ diesel::table! {
         link -> Nullable<Text>,
         image_url -> Nullable<Text>,
         image_text -> Nullable<Text>,
+        last_update -> Timestamp,
     }
 }
 
