@@ -33,7 +33,7 @@ button {
   align-items: center;
 }
 
-button >>> svg {
+button:deep(svg) {
   width: var(--fs-regular);
   height: var(--fs-regular);
 }

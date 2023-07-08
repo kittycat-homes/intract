@@ -16,13 +16,13 @@
 }
 
 .card {
-  &:deep p {
+  &:deep(p) {
     font-size: var(--fs-regular);
   }
-  &:deep h1 {
+  &:deep(h1) {
     font-size: var(--fs-xl);
   }
-  &:deep * {
+  &:deep(*) {
     color: var(--black);
   }
 }

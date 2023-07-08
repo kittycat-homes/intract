@@ -85,7 +85,6 @@ const toggle_password = () => {
     flex-direction: row;
     align-items: center;
     justify-content: center;
-    gap: var(--pad-size);
   }
 }
 
@@ -153,6 +152,6 @@ label {
   display: flex;
   flex-direction: row;
   flex-grow: 1;
-  gap: var(--pad-size);
+  gap: var(--border-width);
 }
 </style>

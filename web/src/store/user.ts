@@ -1,10 +1,10 @@
 import { conf } from "@/api";
-import { AccountApi, User } from "@/swagger";
+import { AccountApi, ResponseError, User } from "@/swagger";
 import { defineStore } from "pinia";
 
 type UserData = {
   info: User | null;
-  error: boolean;
+  status: null | number;
   loading: boolean;
 };
 
@@ -13,25 +13,23 @@ export const useUserStore = defineStore({
   state: () =>
     ({
       info: null,
-      error: false,
+      status: null,
       loading: false,
     } as UserData),
   actions: {
     async whoami() {
       this.loading = true;
-      await new AccountApi(conf())
-        .whoami()
-        .then(
-          (value) => {
-            this.info = value;
-          },
-          (error) => {
-            this.error = true;
-          }
-        )
-        .finally(() => {
-          this.loading = false;
-        });
+      try {
+        const response = await new AccountApi(conf()).whoamiRaw();
+        this.info = await response.value();
+      } catch (e) {
+        if (e instanceof ResponseError) {
+          this.status = e.response.status;
+        }
+        this.status = 500;
+      } finally {
+        this.loading = false;
+      }
     },
   },
 });

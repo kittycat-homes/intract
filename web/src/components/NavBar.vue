@@ -28,23 +28,12 @@ import { useSessionInfoStore } from "@/store/session_info";
 import { useUserStore } from "@/store/user";
 const sessionStore = useSessionInfoStore();
 const userStore = useUserStore();
-if (!userStore.loading && !userStore.error && userStore.info === null) {
+if (
+  !userStore.loading &&
+  userStore.status === null &&
+  userStore.info === null
+) {
   userStore.whoami();
-}
-</script>
-
-<script lang="ts">
-type Button = {
-  name: string;
-  link: string;
-  icon: Icons;
-};
-
-enum Icons {
-  Home,
-  Rss,
-  Login,
-  User,
 }
 </script>
 

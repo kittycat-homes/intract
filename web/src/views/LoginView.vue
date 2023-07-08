@@ -86,12 +86,12 @@ const leave_page_cuz_logged_in = () => {
 
 leave_page_cuz_logged_in();
 
-session.$subscribe((_mutation, _state) => {
+session.$subscribe(() => {
   whoami();
   leave_page_cuz_logged_in();
 });
 
-user.$subscribe((_mutation, _state) => {
+user.$subscribe(() => {
   leave_page_cuz_logged_in();
 });
 

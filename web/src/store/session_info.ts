@@ -1,5 +1,4 @@
 import { conf } from "@/api";
-import router from "@/router";
 import { AccountApi, ResponseError, Session } from "@/swagger";
 import { defineStore } from "pinia";
 
