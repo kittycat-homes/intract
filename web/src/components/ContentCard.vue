@@ -1,6 +1,14 @@
 <template>
   <div class="card">
-    <slot></slot>
+    <div class="title">
+      <div class="stripes" />
+      <p class="title-content">
+        <slot name="title"><h1>meow</h1></slot>
+      </p>
+    </div>
+    <div class="content">
+      <slot></slot>
+    </div>
   </div>
 </template>
 
@@ -8,11 +16,81 @@
 .card {
   display: flex;
   flex-direction: column;
+  background-color: var(--light-orange);
+  border-radius: var(--radius);
+  flex: 1;
+}
+
+.content {
   padding: var(--pad-size);
+  display: flex;
+  flex-direction: column;
   background-color: var(--light-orange);
   border-radius: var(--radius);
   flex: 1;
   gap: var(--pad-size);
+}
+
+.title-content {
+  flex-grow: 1;
+  display: block;
+  margin-top: auto;
+  margin-bottom: auto;
+  text-align: right;
+}
+
+.title {
+  display: flex;
+  margin-top: var(--fs-large);
+  background-color: var(--black);
+  align-items: flex-end;
+}
+
+.stripes {
+  width: calc(var(--fs-xl) * 2);
+  aspect-ratio: 1/1;
+  background: linear-gradient(
+    45deg,
+    var(--quaternary-accent) 12.5%,
+    var(--tertiary-accent) 13%,
+    var(--tertiary-accent) 25.5%,
+    var(--secondary-accent) 26%,
+    var(--secondary-accent) 37.5%,
+    var(--primary-accent) 38%,
+    var(--primary-accent) 50%,
+    transparent 50.5%
+  );
+}
+
+@media screen and (orientation: landscape) and (min-width: 1280px) {
+  .card {
+    flex-direction: row;
+    display: flex;
+  }
+
+  .title {
+    align-items: flex-start;
+    margin-left: var(--fs-large);
+    display: flex;
+    flex-direction: column-reverse;
+    margin-top: 0;
+    flex-grow: 0.618;
+  }
+
+  .title-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: auto;
+  }
+
+  .content {
+    flex-grow: 1;
+  }
+}
+
+.title:deep(h1) {
+  color: var(--quaternary-accent);
 }
 
 .card {

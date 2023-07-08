@@ -6,7 +6,7 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "swagger-gen": "openapi-generator-cli generate -g typescript-fetch -i http://localhost:3000/docs/openapi.json -o src/swagger/"
+    "swagger-gen": "rm -rf ./src/swagger && openapi-generator-cli generate -g typescript-fetch -i http://localhost:3000/docs/openapi.json -o src/swagger/"
   },
   "dependencies": {
     "@vue/cli": "^5.0.8",

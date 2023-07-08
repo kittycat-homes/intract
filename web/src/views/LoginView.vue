@@ -2,7 +2,10 @@
   <LoadingSpinner v-if="server.loading || session.loading" />
   <ContentBox v-else-if="!server.error && server.info">
     <ContentCard>
-      <h1>login to {{ server.info?.name }}</h1>
+      <template v-slot:title>
+        <h1>login to {{ server.info?.name }}<br /></h1
+      ></template>
+
       <p>
         don't have an account yet?
         <router-link to="register">register</router-link>
