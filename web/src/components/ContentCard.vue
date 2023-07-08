@@ -37,6 +37,7 @@
   margin-top: auto;
   margin-bottom: auto;
   text-align: right;
+  margin: var(--pad-size);
 }
 
 .title {
@@ -74,23 +75,34 @@
     display: flex;
     flex-direction: column-reverse;
     margin-top: 0;
-    flex-grow: 0.618;
+    flex-grow: 1;
+    width: min-content;
   }
 
   .title-content {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    margin: auto;
+    margin-top: auto;
+    margin-bottom: auto;
+    margin-left: auto;
   }
 
   .content {
-    flex-grow: 1;
+    flex-grow: 1.61803;
   }
 }
 
 .title:deep(h1) {
   color: var(--quaternary-accent);
+}
+
+.title:deep(a) {
+  color: var(--secondary-accent);
+}
+
+.title:deep(p) {
+  color: var(--light-orange);
 }
 
 .card {

@@ -3,13 +3,13 @@
   <ContentBox v-else-if="!server.error && server.info">
     <ContentCard>
       <template v-slot:title>
-        <h1>login to {{ server.info?.name }}<br /></h1
-      ></template>
+        <h1>login to {{ server.info?.name }}<br /></h1>
+        <p>
+          don't have an account yet?
+          <router-link to="register">register</router-link>!
+        </p>
+      </template>
 
-      <p>
-        don't have an account yet?
-        <router-link to="register">register</router-link>
-      </p>
       <form @submit.prevent="send_login">
         <BaseInput
           id="login-username"
