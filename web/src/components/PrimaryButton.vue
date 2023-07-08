@@ -1,20 +1,23 @@
 <template>
   <div>
-    <button @click="clicked()">
+    <button @click="click()">
       <slot></slot>
     </button>
   </div>
 </template>
 
 <script lang="ts">
-export default {
-  name: "action-button",
+import { defineComponent } from "vue";
+
+export default defineComponent({
+  name: "PrimaryButton",
+  emits: ["clicked"],
   methods: {
-    clicked() {
+    click() {
       this.$emit("clicked");
     },
   },
-};
+});
 </script>
 
 <style scoped>
