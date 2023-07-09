@@ -1,13 +1,36 @@
 <template>
   <div class="card">
     <div class="title">
-      <div class="stripes" />
+      <div class="stripesbox">
+        <div class="stripes" />
+      </div>
       <p class="title-content">
-        <slot name="title"><h1>meow</h1></slot>
+        <slot name="title"
+          ><h1>meow</h1>
+          <p>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+            eiusmod tempor incididunt ut labore et dolore magna aliqua. Quam
+            elementum pulvinar etiam non quam lacus suspendisse faucibus
+            interdum.
+          </p></slot
+        >
       </p>
     </div>
     <div class="content">
-      <slot></slot>
+      <slot>
+        <p>
+          Accumsan sit amet nulla facilisi morbi tempus iaculis urna. Congue
+          mauris rhoncus aenean vel elit scelerisque mauris pellentesque. Proin
+          libero nunc consequat interdum varius sit amet. Maecenas volutpat
+          blandit aliquam etiam erat. Laoreet id donec ultrices tincidunt arcu
+          non sodales neque sodales. Ornare aenean euismod elementum nisi. Non
+          odio euismod lacinia at quis risus sed vulputate odio. Eget arcu
+          dictum varius duis at consectetur lorem. Sed risus pretium quam
+          vulputate dignissim suspendisse in est ante. Tristique et egestas quis
+          ipsum suspendisse ultrices gravida. Nec dui nunc mattis enim ut tellus
+          elementum sagittis.
+        </p>
+      </slot>
     </div>
   </div>
 </template>
@@ -48,6 +71,7 @@
 }
 
 .stripes {
+  min-width: calc(var(--fs-xl) * 2);
   width: calc(var(--fs-xl) * 2);
   aspect-ratio: 1/1;
   background: linear-gradient(
@@ -91,6 +115,10 @@
   .content {
     flex-grow: 1.61803;
   }
+
+  .content:deep(p) {
+    font-size: var(--fs-regular);
+  }
 }
 
 .title:deep(h1) {
@@ -114,6 +142,17 @@
   }
   &:deep(*) {
     color: var(--black);
+  }
+}
+
+@media (max-width: 600px) {
+  .title {
+    flex-direction: column-reverse;
+  }
+
+  .stripesbox {
+    display: flex;
+    width: 100%;
   }
 }
 </style>
