@@ -22,21 +22,25 @@ import NavBar from "@/components/NavBar.vue";
   background-color: var(--black);
 }
 
-@media (orientation: landscape) {
-  #app {
-    flex-direction: row;
-  }
-}
-
 .router-view {
+  display: flex;
   background-color: var(--black);
-  overflow-y: scroll;
-  overflow-x: hidden;
+  overflow: hidden;
   flex-grow: 1;
   flex-direction: column;
 }
 
 nav {
   background-color: var(--primary-accent);
+}
+
+@media (orientation: landscape) {
+  #app {
+    flex-direction: row;
+  }
+
+  .router-view {
+    flex-direction: row;
+  }
 }
 </style>

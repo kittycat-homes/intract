@@ -7,8 +7,10 @@
 <style scoped>
 #box {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   gap: var(--pad-size);
   padding: var(--pad-size);
+  overflow: scroll;
+  flex-grow: 1;
 }
 </style>
