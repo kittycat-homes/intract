@@ -46,7 +46,6 @@ diesel::table! {
         link -> Nullable<Text>,
         image_url -> Nullable<Text>,
         image_text -> Nullable<Text>,
-        last_update -> Timestamp,
         last_checked -> Timestamp,
     }
 }
@@ -88,6 +87,7 @@ diesel::table! {
     users_follow_feeds (user_id, feed_url) {
         user_id -> Uuid,
         feed_url -> Text,
+        hidden -> Bool,
     }
 }
 

@@ -1,11 +1,12 @@
 use aide::axum::{routing::post_with, ApiRouter};
-use axum::Extension;
+use axum::{extract::State, Extension};
+use diesel::{ExpressionMethods, QueryDsl, SelectableHelper};
 use hyper::StatusCode;
 use schemars::JsonSchema;
 use serde::Deserialize;
 
 use crate::{
-    db::models::User,
+    db::models::{FeedItem, User, UsersFollowFeeds},
     extractors::Json,
     feeds::{self, FeedData},
     state::AppState,
@@ -38,11 +39,82 @@ pub struct FollowFeedInputData {
 }
 
 async fn add_feed(
-    Extension(_current_user): Extension<User>,
+    State(state): State<AppState>,
+    Extension(current_user): Extension<User>,
     Json(input): Json<FollowFeedInputData>,
-) -> Result<Json<Vec<FeedData>>, StatusCode> {
+) -> Result<Json<FeedData>, StatusCode> {
+    use crate::schema::feed_items::dsl::*;
+    use diesel_async::RunQueryDsl;
+
+    let mut conn = state
+        .pool
+        .get()
+        .await
+        .or(Err(StatusCode::SERVICE_UNAVAILABLE))?;
+
+    let items: Vec<FeedItem> = feed_items
+        .filter(feed_url.eq(&input.uri))
+        .select(FeedItem::as_select())
+        .load(&mut conn)
+        .await
+        .or(Err(StatusCode::SERVICE_UNAVAILABLE))?;
+
     let feed_data = feeds::parse_feed_from_url(&input.uri)
         .await
         .or(Err(StatusCode::BAD_REQUEST))?;
-    Ok(Json(vec![feed_data]))
+
+    // take out all the ones we already have
+    let new_items: Vec<&FeedItem> = feed_data
+        .items
+        .iter()
+        .filter(|new_item| !&items.contains(&new_item))
+        .collect();
+
+    // insert or update the feed
+    let result = diesel::insert_into(crate::schema::feeds::table)
+        .values(&feed_data.feed)
+        .on_conflict(crate::schema::feeds::dsl::url)
+        .do_update()
+        .set(&feed_data.feed)
+        .execute(&mut conn)
+        .await;
+
+    if let Err(e) = result {
+        tracing::error!("failed to insert feed: {:#?}", e);
+        return Err(StatusCode::SERVICE_UNAVAILABLE);
+    }
+
+    let follow_data = UsersFollowFeeds {
+        feed_url: feed_data.feed.url.clone(),
+        user_id: current_user.id.clone(),
+        hidden: input.hide,
+    };
+
+    let result = diesel::insert_into(crate::schema::users_follow_feeds::table)
+        .values(&follow_data)
+        .on_conflict((
+            crate::schema::users_follow_feeds::dsl::feed_url,
+            crate::schema::users_follow_feeds::dsl::user_id,
+        ))
+        .do_update()
+        .set(&follow_data)
+        .execute(&mut conn)
+        .await;
+
+    if let Err(e) = result {
+        tracing::error!("failed to follow feed: {:#?}", e);
+        return Err(StatusCode::SERVICE_UNAVAILABLE);
+    }
+
+    let result = diesel::insert_into(crate::schema::feed_items::table)
+        .values(new_items)
+        .execute(&mut conn)
+        .await;
+
+    if let Err(e) = result {
+        tracing::error!("failed to insert feed items: {:#?}", e);
+        return Err(StatusCode::SERVICE_UNAVAILABLE);
+    }
+
+    Ok(Json(feed_data))
 }

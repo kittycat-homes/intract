@@ -13,7 +13,6 @@ pub async fn parse_feed_from_url(uri: &str) -> Result<FeedData, Box<dyn std::err
     parser_url.set_path("/");
     let bytes = &response.bytes().await?;
     let feed = feed_rs::parser::parse_with_uri(bytes.as_ref(), Some(parser_url.as_str()))?;
-    tracing::debug!("got feed from {:#?}! {:#?}", parser_url.as_str(), feed);
 
     let img = get_image_from_feed(&feed);
     let the_feed = Feed {
@@ -127,7 +126,7 @@ fn get_image_for_feed_entry(entry: &feed_rs::model::Entry) -> Option<Image> {
 #[derive(JsonSchema, Serialize)]
 pub struct FeedData {
     /// the feed
-    feed: Feed,
+    pub feed: Feed,
     /// the items that belong to this feed
-    items: Vec<FeedItem>,
+    pub items: Vec<FeedItem>,
 }

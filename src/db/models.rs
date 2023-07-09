@@ -7,6 +7,8 @@ use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
+use crate::schema::users_follow_feeds;
+
 #[derive(
     diesel_derive_enum::DbEnum,
     Debug,
@@ -107,9 +109,12 @@ pub struct Session {
     pub expires_at: std::time::SystemTime,
 }
 
-#[derive(Queryable, Selectable, Serialize, Deserialize, JsonSchema, Insertable)]
+#[derive(
+    Queryable, Selectable, Serialize, Deserialize, JsonSchema, Insertable, AsChangeset, Identifiable,
+)]
 #[diesel(table_name= crate::schema::feeds)]
 #[diesel(check_for_backend(diesel::pg::Pg))]
+#[diesel(primary_key(url))]
 pub struct Feed {
     /// url of the feed
     pub url: String,
@@ -127,12 +132,24 @@ pub struct Feed {
     pub last_checked: std::time::SystemTime,
 }
 
-#[derive(Derivative, Queryable, Selectable, Serialize, Deserialize, JsonSchema, Insertable)]
+#[derive(
+    Derivative,
+    Queryable,
+    Selectable,
+    Serialize,
+    Deserialize,
+    JsonSchema,
+    Insertable,
+    Identifiable,
+    AsChangeset,
+)]
 #[diesel(table_name= crate::schema::feed_items)]
 #[diesel(check_for_backend(diesel::pg::Pg))]
 #[derivative(PartialEq)]
 pub struct FeedItem {
+    #[derivative(PartialEq = "ignore")]
     pub id: Uuid,
+    #[derivative(PartialEq = "ignore")]
     #[serde(skip)]
     /// the feed that this item is a part of
     /// it's also the primary key for that
@@ -163,4 +180,15 @@ pub struct FeedItem {
     /// when this item was fetched from the server
     #[derivative(PartialEq = "ignore")]
     pub synced_at: SystemTime,
+}
+
+#[derive(Identifiable, Selectable, Queryable, Associations, Debug, Insertable, AsChangeset)]
+#[diesel(belongs_to(User))]
+#[diesel(belongs_to(Feed, foreign_key = feed_url))]
+#[diesel(table_name = users_follow_feeds)]
+#[diesel(primary_key(user_id, feed_url))]
+pub struct UsersFollowFeeds {
+    pub user_id: Uuid,
+    pub feed_url: String,
+    pub hidden: bool,
 }
