@@ -1327,6 +1327,7 @@ dependencies = [
  "feed-rs",
  "hyper",
  "indexmap 1.9.3",
+ "mime",
  "mime_guess",
  "once_cell",
  "rand",

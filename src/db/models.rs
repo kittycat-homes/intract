@@ -1,3 +1,5 @@
+use std::time::SystemTime;
+
 use clap::ValueEnum;
 use diesel::prelude::*;
 use schemars::JsonSchema;
@@ -104,7 +106,7 @@ pub struct Session {
     pub expires_at: std::time::SystemTime,
 }
 
-#[derive(Queryable, Selectable, Serialize, Deserialize, JsonSchema, Insertable, Default)]
+#[derive(Queryable, Selectable, Serialize, Deserialize, JsonSchema, Insertable)]
 #[diesel(table_name= crate::schema::feeds)]
 #[diesel(check_for_backend(diesel::pg::Pg))]
 pub struct Feed {
@@ -120,9 +122,11 @@ pub struct Feed {
     pub image_url: Option<String>,
     /// title of that image, can be used for alt text
     pub image_text: Option<String>,
+    /// when the feed was last checked
+    pub last_checked: std::time::SystemTime,
 }
 
-#[derive(Queryable, Selectable, Serialize, Deserialize, JsonSchema, Insertable, Default)]
+#[derive(Queryable, Selectable, Serialize, Deserialize, JsonSchema, Insertable)]
 #[diesel(table_name= crate::schema::feed_items)]
 #[diesel(check_for_backend(diesel::pg::Pg))]
 pub struct FeedItem {
@@ -137,4 +141,7 @@ pub struct FeedItem {
     pub media_description: Option<String>,
     pub author_name: Option<String>,
     pub title: Option<String>,
+    pub updated_at: std::time::SystemTime,
+    pub created_at: SystemTime,
+    pub synced_at: SystemTime,
 }

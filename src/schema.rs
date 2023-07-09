@@ -47,6 +47,7 @@ diesel::table! {
         image_url -> Nullable<Text>,
         image_text -> Nullable<Text>,
         last_update -> Timestamp,
+        last_checked -> Timestamp,
     }
 }
 

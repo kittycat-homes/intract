@@ -1,4 +1,6 @@
-use feed_rs::model::Image;
+use std::time::SystemTime;
+
+use feed_rs::model::{Image, MediaContent, MediaObject, MediaThumbnail};
 use schemars::JsonSchema;
 use serde::Serialize;
 use uuid::Uuid;
@@ -24,7 +26,7 @@ pub async fn parse_feed_from_url(uri: &str) -> Result<FeedData, Box<dyn std::err
             Some(i) => get_image_text(&i),
         },
         title: feed.title.map(|title| title.content),
-        ..Default::default()
+        last_checked: std::time::SystemTime::now(),
     };
 
     Ok(FeedData {
@@ -59,6 +61,7 @@ fn get_image_text(img: &feed_rs::model::Image) -> Option<String> {
 }
 
 fn into_feed_item(feed_url: &str, item: &feed_rs::model::Entry) -> FeedItem {
+    let img = get_image_for_feed_entry(&item);
     FeedItem {
         id: Uuid::now_v7(),
         feed_url: feed_url.to_string(),
@@ -67,11 +70,65 @@ fn into_feed_item(feed_url: &str, item: &feed_rs::model::Entry) -> FeedItem {
         description: item.summary.clone().map(|summary| summary.content),
         author_name: item.authors.first().map(|author| author.name.clone()),
         title: item.title.clone().map(|title| title.content),
-        ..Default::default()
+        image_url: img.clone().map(|i| i.uri),
+        image_text: img.clone().map(|i| get_image_text(&i)).flatten(),
+        media_description: None,
+        // use unix epoch as fallback, since the
+        // feeds must have been updated / created
+        // at some point in the past
+        created_at: item
+            .published
+            .map(|time| time.into())
+            .unwrap_or(SystemTime::UNIX_EPOCH),
+        updated_at: item
+            .updated
+            .map(|time| time.into())
+            .unwrap_or(SystemTime::UNIX_EPOCH),
+        synced_at: SystemTime::now(),
     }
 }
 
-#[derive(JsonSchema, Serialize, Default)]
+fn get_image_for_feed_entry(entry: &feed_rs::model::Entry) -> Option<Image> {
+    if let Some(from_thumbnail) = entry
+        // first try first media item with a thumbnail
+        .media
+        .iter()
+        .filter(|media_content| !media_content.thumbnails.is_empty())
+        .collect::<Vec<&MediaObject>>()
+        .first()
+        .map(|media_item| media_item.thumbnails.first().map(|item| &item.image))
+        .flatten()
+        .map(|image| image.clone())
+    {
+        return Some(from_thumbnail);
+    }
+
+    // get first media object that is also an image
+    for media_object in entry.media.iter() {
+        for media_content in media_object.content.iter() {
+            if media_content
+                .content_type
+                .clone()
+                .map(|mime| mime.type_() == "image")
+                .unwrap_or(false)
+            {
+                if let Some(url) = media_content.clone().url {
+                    return Some(Image {
+                        uri: url.clone().to_string(),
+                        description: media_object.description.clone().map(|desc| desc.content),
+                        height: None,
+                        title: None,
+                        link: None,
+                        width: None,
+                    });
+                }
+            }
+        }
+    }
+    None
+}
+
+#[derive(JsonSchema, Serialize)]
 pub struct FeedData {
     /// the feed
     feed: Feed,
