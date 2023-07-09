@@ -1,6 +1,6 @@
 use std::time::SystemTime;
 
-use feed_rs::model::{Image, MediaContent, MediaObject, MediaThumbnail};
+use feed_rs::model::{Image, MediaObject};
 use schemars::JsonSchema;
 use serde::Serialize;
 use uuid::Uuid;
@@ -23,7 +23,7 @@ pub async fn parse_feed_from_url(uri: &str) -> Result<FeedData, Box<dyn std::err
         image_url: get_image_from_feed(&feed).map(|img| img.uri),
         image_text: match &img {
             None => None,
-            Some(i) => get_image_text(&i),
+            Some(i) => get_image_text(i),
         },
         title: feed.title.map(|title| title.content),
         last_checked: std::time::SystemTime::now(),
@@ -43,8 +43,7 @@ pub async fn parse_feed_from_url(uri: &str) -> Result<FeedData, Box<dyn std::err
 fn get_image_from_feed(feed: &feed_rs::model::Feed) -> Option<Image> {
     feed.logo
         .clone()
-        .map(|v| v.clone())
-        .or(feed.icon.clone().map(|v| v.clone()))
+        .or(feed.icon.clone())
 }
 
 /// get text of an image, prefers description over title
@@ -61,7 +60,7 @@ fn get_image_text(img: &feed_rs::model::Image) -> Option<String> {
 }
 
 fn into_feed_item(feed_url: &str, item: &feed_rs::model::Entry) -> FeedItem {
-    let img = get_image_for_feed_entry(&item);
+    let img = get_image_for_feed_entry(item);
     FeedItem {
         id: Uuid::now_v7(),
         feed_url: feed_url.to_string(),
@@ -71,7 +70,7 @@ fn into_feed_item(feed_url: &str, item: &feed_rs::model::Entry) -> FeedItem {
         author_name: item.authors.first().map(|author| author.name.clone()),
         title: item.title.clone().map(|title| title.content),
         image_url: img.clone().map(|i| i.uri),
-        image_text: img.clone().map(|i| get_image_text(&i)).flatten(),
+        image_text: img.and_then(|i| get_image_text(&i)),
         media_description: None,
         // use unix epoch as fallback, since the
         // feeds must have been updated / created
@@ -96,9 +95,7 @@ fn get_image_for_feed_entry(entry: &feed_rs::model::Entry) -> Option<Image> {
         .filter(|media_content| !media_content.thumbnails.is_empty())
         .collect::<Vec<&MediaObject>>()
         .first()
-        .map(|media_item| media_item.thumbnails.first().map(|item| &item.image))
-        .flatten()
-        .map(|image| image.clone())
+        .and_then(|media_item| media_item.thumbnails.first().map(|item| &item.image)).cloned()
     {
         return Some(from_thumbnail);
     }
@@ -114,7 +111,7 @@ fn get_image_for_feed_entry(entry: &feed_rs::model::Entry) -> Option<Image> {
             {
                 if let Some(url) = media_content.clone().url {
                     return Some(Image {
-                        uri: url.clone().to_string(),
+                        uri: url.to_string(),
                         description: media_object.description.clone().map(|desc| desc.content),
                         height: None,
                         title: None,
