@@ -90,7 +90,7 @@ const toggle_password = () => {
 
 @media (orientation: landscape) {
   .button-and-input {
-    flex-direction: column;
+    flex-wrap: nowrap;
   }
 }
 
