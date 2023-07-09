@@ -80,11 +80,17 @@ const toggle_password = () => {
   background-color: var(--secondary-accent);
 }
 
-@media (orientation: landscape) {
+@media screen and (orientation: landscape) and (min-width: 1280px) {
   .input-wrap {
     flex-direction: row;
     align-items: center;
     justify-content: center;
+  }
+}
+
+@media (orientation: landscape) {
+  .button-and-input {
+    flex-direction: column;
   }
 }
 
@@ -153,5 +159,6 @@ label {
   flex-direction: row;
   flex-grow: 1;
   gap: var(--border-width);
+  flex-wrap: wrap;
 }
 </style>

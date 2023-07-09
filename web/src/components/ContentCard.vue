@@ -91,6 +91,7 @@
   .card {
     flex-direction: row;
     display: flex;
+    box-sizing: border-box;
   }
 
   .title {
@@ -114,6 +115,10 @@
 
   .content {
     flex-grow: 1.61803;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
   }
 
   .content:deep(p) {
