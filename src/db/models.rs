@@ -1,6 +1,7 @@
 use std::time::SystemTime;
 
 use clap::ValueEnum;
+use derivative::Derivative;
 use diesel::prelude::*;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
@@ -126,22 +127,40 @@ pub struct Feed {
     pub last_checked: std::time::SystemTime,
 }
 
-#[derive(Queryable, Selectable, Serialize, Deserialize, JsonSchema, Insertable)]
+#[derive(Derivative, Queryable, Selectable, Serialize, Deserialize, JsonSchema, Insertable)]
 #[diesel(table_name= crate::schema::feed_items)]
 #[diesel(check_for_backend(diesel::pg::Pg))]
+#[derivative(PartialEq)]
 pub struct FeedItem {
     pub id: Uuid,
     #[serde(skip)]
+    /// the feed that this item is a part of
+    /// it's also the primary key for that
     pub feed_url: String,
+    /// the link that leads to the thing this item
+    /// is talking about
     pub link: Option<String>,
+    /// should be unique but is not guaranteed!
+    /// that is why we skip it for partial eq
+    #[derivative(PartialEq = "ignore")]
     pub guid: Option<String>,
+    /// short summary of the feed item
     pub description: Option<String>,
+    /// link to an image
     pub image_url: Option<String>,
+    /// used for alt text on images.
+    /// description > title > None
     pub image_text: Option<String>,
     pub media_description: Option<String>,
+    /// displays who wrote this
     pub author_name: Option<String>,
+    /// title of this item
     pub title: Option<String>,
+    /// when this item was last updated
     pub updated_at: std::time::SystemTime,
+    /// when this item was created
     pub created_at: SystemTime,
+    /// when this item was fetched from the server
+    #[derivative(PartialEq = "ignore")]
     pub synced_at: SystemTime,
 }

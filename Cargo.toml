@@ -29,6 +29,7 @@ bb8 = "0.8"
 chrono = {version = "0.4", features = ["serde"]}
 clap = {version = "4", features = ["cargo", "derive"]}
 confy = "0.5.1"
+derivative = "2.2.0"
 diesel = {version = "2", features = ["postgres", "uuid"]}
 diesel-async = {version = "0.3", features = ["postgres", "bb8"]}
 diesel-derive-enum = {version = "2", features = ["postgres"]}

@@ -41,9 +41,7 @@ pub async fn parse_feed_from_url(uri: &str) -> Result<FeedData, Box<dyn std::err
 
 /// get an image from a feed, prefers big image over icon
 fn get_image_from_feed(feed: &feed_rs::model::Feed) -> Option<Image> {
-    feed.logo
-        .clone()
-        .or(feed.icon.clone())
+    feed.logo.clone().or(feed.icon.clone())
 }
 
 /// get text of an image, prefers description over title
@@ -95,7 +93,8 @@ fn get_image_for_feed_entry(entry: &feed_rs::model::Entry) -> Option<Image> {
         .filter(|media_content| !media_content.thumbnails.is_empty())
         .collect::<Vec<&MediaObject>>()
         .first()
-        .and_then(|media_item| media_item.thumbnails.first().map(|item| &item.image)).cloned()
+        .and_then(|media_item| media_item.thumbnails.first().map(|item| &item.image))
+        .cloned()
     {
         return Some(from_thumbnail);
     }
