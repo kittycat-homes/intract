@@ -1,5 +1,7 @@
 <template>
-  <FilterBox />
+  <FilterBox>
+    <router-link to="/feeds/follow"><BookmarkIcon />e</router-link>
+  </FilterBox>
   <ContentBox>
     <ContentCard></ContentCard>
     <ContentCard></ContentCard>
@@ -21,4 +23,5 @@
 import ContentBox from "@/components/ContentBox.vue";
 import FilterBox from "@/components/FilterBox.vue";
 import ContentCard from "@/components/ContentCard.vue";
+import { BookmarkIcon } from "@heroicons/vue/24/solid";
 </script>

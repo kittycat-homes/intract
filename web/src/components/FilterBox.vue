@@ -1,6 +1,6 @@
 <template>
   <div class="filter-box">
-    <slot><h1>meow</h1></slot>
+    <slot></slot>
   </div>
 </template>
 
