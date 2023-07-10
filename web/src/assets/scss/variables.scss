@@ -3,6 +3,7 @@
   --fs-regular: calc(var(--fs-small) * 1.61803);
   --fs-large: calc(var(--fs-regular) * 1.61803);
   --fs-xl: calc(var(--fs-large) * 1.61803);
+  --fs-xxl: calc(var(--fs-xl) * 1.61803);
   --pad-size-small: calc(var(--fs-small));
   --pad-size: var(--fs-regular);
   --radius: calc(var(--fs-large));

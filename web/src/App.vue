@@ -4,14 +4,14 @@ import NavBar from "@/components/NavBar.vue";
 
 <template>
   <div id="app">
-    <NavBar id="nav-bar" />
+    <NavBar />
     <div class="router-view">
       <router-view />
     </div>
   </div>
 </template>
 
-<style>
+<style scoped>
 #app {
   height: 100vh;
   width: 100vw;
@@ -30,16 +30,12 @@ import NavBar from "@/components/NavBar.vue";
   flex-direction: column;
 }
 
-nav {
-  background-color: var(--primary-accent);
-}
-
 @media (orientation: landscape) {
   #app {
     flex-direction: row;
   }
 
-  .router-view {
+  #app:deep(.router-view) {
     flex-direction: row;
   }
 }

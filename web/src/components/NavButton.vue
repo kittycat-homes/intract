@@ -17,20 +17,21 @@ const { name, link } = toRefs(props);
 
 <style scoped>
 .link {
+  box-sizing: content-box;
   text-decoration: none;
   display: flex;
   flex-direction: column;
   align-items: center;
+  height: var(--fs-xxl);
+  width: var(--fs-xxl);
 }
 
 .link:deep(svg) {
   display: flex;
   padding: var(--pad-size-small);
-  height: var(--fs-large);
-  width: var(--fs-large);
   background-color: var(--black);
   color: var(--light-orange);
-  border-radius: var(--fs-large);
+  border-radius: var(--fs-xxl);
 }
 
 .router-link-active:deep(svg),
