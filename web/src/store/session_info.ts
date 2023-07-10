@@ -1,11 +1,10 @@
 import { conf } from "@/api";
-import { AccountApi, ResponseError, Session } from "@/swagger";
+import { AccountApi, ResponseError } from "@/swagger";
 import { defineStore } from "pinia";
 
 type SessionInfoState = {
   status: number | null;
   loading: boolean;
-  session: Session | null;
 };
 
 export const useSessionInfoStore = defineStore({
@@ -24,7 +23,6 @@ export const useSessionInfoStore = defineStore({
         const data = await new AccountApi(conf()).loginRaw({
           loginData: { password: password, username: username },
         });
-        this.session = await data.value();
         this.status = 200;
       } catch (e) {
         if (e instanceof ResponseError) {
