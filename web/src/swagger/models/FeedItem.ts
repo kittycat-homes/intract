@@ -13,6 +13,13 @@
  */
 
 import { exists, mapValues } from '../runtime';
+import type { SystemTime } from './SystemTime';
+import {
+    SystemTimeFromJSON,
+    SystemTimeFromJSONTyped,
+    SystemTimeToJSON,
+} from './SystemTime';
+
 /**
  * 
  * @export
@@ -20,19 +27,25 @@ import { exists, mapValues } from '../runtime';
  */
 export interface FeedItem {
     /**
-     * 
+     * displays who wrote this
      * @type {any}
      * @memberof FeedItem
      */
     authorName?: any | null;
     /**
-     * 
+     * when this item was created
+     * @type {SystemTime}
+     * @memberof FeedItem
+     */
+    createdAt: SystemTime;
+    /**
+     * short summary of the feed item
      * @type {any}
      * @memberof FeedItem
      */
     description?: any | null;
     /**
-     * 
+     * should be unique but is not guaranteed! that is why we skip it for partial eq
      * @type {any}
      * @memberof FeedItem
      */
@@ -44,19 +57,19 @@ export interface FeedItem {
      */
     id: any | null;
     /**
-     * 
+     * used for alt text on images. description > title > None
      * @type {any}
      * @memberof FeedItem
      */
     imageText?: any | null;
     /**
-     * 
+     * link to an image
      * @type {any}
      * @memberof FeedItem
      */
     imageUrl?: any | null;
     /**
-     * 
+     * the link that leads to the thing this item is talking about
      * @type {any}
      * @memberof FeedItem
      */
@@ -68,11 +81,23 @@ export interface FeedItem {
      */
     mediaDescription?: any | null;
     /**
-     * 
+     * when this item was fetched from the server
+     * @type {SystemTime}
+     * @memberof FeedItem
+     */
+    syncedAt: SystemTime;
+    /**
+     * title of this item
      * @type {any}
      * @memberof FeedItem
      */
     title?: any | null;
+    /**
+     * when this item was last updated
+     * @type {SystemTime}
+     * @memberof FeedItem
+     */
+    updatedAt: SystemTime;
 }
 
 /**
@@ -80,7 +105,10 @@ export interface FeedItem {
  */
 export function instanceOfFeedItem(value: object): boolean {
     let isInstance = true;
+    isInstance = isInstance && "createdAt" in value;
     isInstance = isInstance && "id" in value;
+    isInstance = isInstance && "syncedAt" in value;
+    isInstance = isInstance && "updatedAt" in value;
 
     return isInstance;
 }
@@ -96,6 +124,7 @@ export function FeedItemFromJSONTyped(json: any, ignoreDiscriminator: boolean): 
     return {
         
         'authorName': !exists(json, 'author_name') ? undefined : json['author_name'],
+        'createdAt': SystemTimeFromJSON(json['created_at']),
         'description': !exists(json, 'description') ? undefined : json['description'],
         'guid': !exists(json, 'guid') ? undefined : json['guid'],
         'id': json['id'],
@@ -103,7 +132,9 @@ export function FeedItemFromJSONTyped(json: any, ignoreDiscriminator: boolean): 
         'imageUrl': !exists(json, 'image_url') ? undefined : json['image_url'],
         'link': !exists(json, 'link') ? undefined : json['link'],
         'mediaDescription': !exists(json, 'media_description') ? undefined : json['media_description'],
+        'syncedAt': SystemTimeFromJSON(json['synced_at']),
         'title': !exists(json, 'title') ? undefined : json['title'],
+        'updatedAt': SystemTimeFromJSON(json['updated_at']),
     };
 }
 
@@ -117,6 +148,7 @@ export function FeedItemToJSON(value?: FeedItem | null): any {
     return {
         
         'author_name': value.authorName,
+        'created_at': SystemTimeToJSON(value.createdAt),
         'description': value.description,
         'guid': value.guid,
         'id': value.id,
@@ -124,7 +156,9 @@ export function FeedItemToJSON(value?: FeedItem | null): any {
         'image_url': value.imageUrl,
         'link': value.link,
         'media_description': value.mediaDescription,
+        'synced_at': SystemTimeToJSON(value.syncedAt),
         'title': value.title,
+        'updated_at': SystemTimeToJSON(value.updatedAt),
     };
 }
 

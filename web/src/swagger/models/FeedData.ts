@@ -27,13 +27,13 @@ import {
  */
 export interface FeedData {
     /**
-     * 
+     * the feed
      * @type {Feed}
      * @memberof FeedData
      */
     feed: Feed;
     /**
-     * 
+     * the items that belong to this feed
      * @type {any}
      * @memberof FeedData
      */

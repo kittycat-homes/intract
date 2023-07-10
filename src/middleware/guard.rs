@@ -4,6 +4,7 @@ use axum::{
     middleware::Next,
     response::Response,
 };
+use axum_extra::extract::CookieJar;
 use diesel::prelude::*;
 
 use crate::{
@@ -19,16 +20,17 @@ use diesel_async::RunQueryDsl;
 /// makes sure that you need at least a powerlevel of user to access these routes
 pub async fn guard_user<T>(
     State(state): State<AppState>,
+    jar: CookieJar,
     mut request: Request<T>,
     next: Next<T>,
 ) -> Result<Response, StatusCode> {
     tracing::debug!("guard middleware triggered!");
-    let token = request
-        .headers()
-        .get("Key")
+    let token = jar
+        .get("SessionID")
         .ok_or(StatusCode::UNAUTHORIZED)?
-        .to_str()
-        .or(Err(StatusCode::UNAUTHORIZED))?;
+        .value();
+
+    tracing::error!("got session");
 
     let mut conn = state
         .pool

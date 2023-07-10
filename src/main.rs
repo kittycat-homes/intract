@@ -5,8 +5,19 @@ use aide::{axum::ApiRouter, openapi::OpenApi};
 use axum::{extract::DefaultBodyLimit, Extension};
 
 use cli::CLI;
+use hyper::{
+    header::{
+        ACCESS_CONTROL_ALLOW_CREDENTIALS, ACCESS_CONTROL_ALLOW_ORIGIN, CONTENT_LENGTH,
+        CONTENT_TYPE, DATE, SET_COOKIE, VARY,
+    },
+    Method,
+};
 use tokio::signal;
-use tower_http::{compression::CompressionLayer, timeout::TimeoutLayer};
+use tower_http::{
+    compression::CompressionLayer,
+    cors::{Any, CorsLayer},
+    timeout::TimeoutLayer,
+};
 use tracing::info;
 use tracing_subscriber::{fmt::SubscriberBuilder, EnvFilter};
 
@@ -103,6 +114,34 @@ async fn generate_server() -> Result<axum::Router, Box<dyn std::error::Error>> {
         .layer(Extension(Arc::new(api)))
         .layer(TimeoutLayer::new(Duration::from_secs(20)))
         .layer(DefaultBodyLimit::max(2000))
+        .layer(
+            CorsLayer::new()
+                .allow_methods([Method::POST, Method::GET, Method::PUT, Method::PATCH])
+                .allow_origin([
+                    #[cfg(debug_assertions)]
+                    "localhost".parse()?,
+                    #[cfg(debug_assertions)]
+                    "http://localhost:8080".parse()?,
+                    #[cfg(debug_assertions)]
+                    "http://127.0.0.1:8080".parse()?,
+                    CONFIG.server.url.parse()?,
+                ])
+                .allow_headers([
+                    ACCESS_CONTROL_ALLOW_ORIGIN,
+                    SET_COOKIE,
+                    VARY,
+                    DATE,
+                    CONTENT_LENGTH,
+                ])
+                .expose_headers([
+                    ACCESS_CONTROL_ALLOW_ORIGIN,
+                    SET_COOKIE,
+                    VARY,
+                    DATE,
+                    CONTENT_LENGTH,
+                ])
+                .allow_credentials(true),
+        )
         .layer(
             CompressionLayer::new()
                 .gzip(true)

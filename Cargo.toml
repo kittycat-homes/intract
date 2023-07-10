@@ -23,12 +23,14 @@ aide = {version = "0.11", features = [
 anyhow = "1.0.71"
 argon2 = {version = "0.5.0", features = ["std"]}
 axum = "0.6"
+axum-extra = {version = "0.7", features = ["cookie", "cookie-private"]}
 axum-jsonschema = {version = "0.6", features = ["aide"]}
 axum-macros = "0.3"
 bb8 = "0.8"
 chrono = {version = "0.4", features = ["serde"]}
 clap = {version = "4", features = ["cargo", "derive"]}
 confy = "0.5.1"
+cookie = "0.17.0"
 derivative = "2.2.0"
 diesel = {version = "2", features = ["postgres", "uuid"]}
 diesel-async = {version = "0.3", features = ["postgres", "bb8"]}
@@ -46,6 +48,7 @@ rust-embed = {version = "6", features = ["compression", "axum", "tokio"]}
 schemars = {version = "0.8", features = ["derive_json_schema", "uuid1"]}
 serde = {version = "1", features = ["derive", "rc"]}
 serde_json = "1"
+time = "0.3.23"
 tokio = {version = "1", features = ["full"]}
 tower = "0.4.13"
 tower-http = {version = "0.4", features = ["compression-gzip", "trace", "cors", "timeout"]}

@@ -49,10 +49,6 @@ export class FeedApi extends runtime.BaseAPI {
 
         headerParameters['Content-Type'] = 'application/json';
 
-        if (this.configuration && this.configuration.apiKey) {
-            headerParameters["Key"] = this.configuration.apiKey("Key"); // ApiKey authentication
-        }
-
         const response = await this.request({
             path: `/api/v1/authorized/feed/follow`,
             method: 'POST',

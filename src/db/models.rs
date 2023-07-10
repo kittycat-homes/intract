@@ -41,7 +41,7 @@ pub enum Powerlevel {
     Owner,
 }
 
-#[derive(Queryable, Selectable, Serialize, JsonSchema, Insertable, Clone)]
+#[derive(Queryable, Selectable, Serialize, JsonSchema, Insertable, Clone, Debug)]
 #[diesel(table_name= crate::schema::users)]
 #[diesel(check_for_backend(diesel::pg::Pg))]
 pub struct User {

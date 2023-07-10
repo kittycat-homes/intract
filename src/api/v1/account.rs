@@ -1,4 +1,4 @@
-use std::time::Duration;
+use std::time::{Duration, SystemTime};
 
 use crate::{
     db::models::{Powerlevel, Session},
@@ -9,10 +9,19 @@ use aide::{
     axum::{routing::post_with, ApiRouter, IntoApiResponse},
     gen::infer_responses,
 };
-use axum::{extract::State, http::StatusCode};
+use axum::{
+    extract::State, headers::AccessControlAllowCredentials, http::StatusCode,
+    response::IntoResponse, TypedHeader,
+};
 
-use diesel::{ExpressionMethods, QueryDsl, SelectableHelper};
+use ::cookie::time::OffsetDateTime;
+use axum_extra::extract::{
+    cookie::{self, Cookie},
+    CookieJar, PrivateCookieJar,
+};
+use diesel::{dsl::IntervalDsl, ExpressionMethods, QueryDsl, SelectableHelper};
 use diesel_async::RunQueryDsl;
+use hyper::{header::SET_COOKIE, HeaderMap};
 use rand::distributions::{Alphanumeric, DistString};
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
@@ -61,6 +70,7 @@ pub fn routes(state: AppState) -> ApiRouter {
                         "provide username and password to get a session token. keep it safe!",
                     )
                     .summary("log in")
+                    .response_with::<200, (), _>(|docs| docs.description("session token has been set"))
                     .response_with::<503, (), _>(|docs| docs.description("database did a fucky wucky"))
                     .response_with::<404, (), _>(|docs| docs.description("this user does not exist"))
                     .response_with::<418, (), _>(|docs| docs.description("your application has not been processed yet! wait until the moderators make their decision"))
@@ -163,8 +173,9 @@ pub struct LoginData {
 
 async fn login(
     State(state): State<AppState>,
+    jar: CookieJar,
     Json(login_data): Json<LoginData>,
-) -> Result<Json<Session>, StatusCode> {
+) -> impl IntoApiResponse {
     let mut conn = state
         .pool
         .get()
@@ -210,8 +221,24 @@ async fn login(
         .await
         .or(Err(StatusCode::INTERNAL_SERVER_ERROR))?;
 
+    let cookie = Cookie::build("SessionID", session.secret)
+        .path("/")
+        .secure(true)
+        .expires(OffsetDateTime::now_utc().checked_add(time::Duration::days(7)))
+        .http_only(true);
+
+    let cookie = cookie.same_site(axum_extra::extract::cookie::SameSite::Strict);
+
+    #[cfg(debug_assertions)]
+    let cookie = cookie.same_site(axum_extra::extract::cookie::SameSite::None);
+
+    let cookie = cookie.finish();
+    tracing::error!("{:#?}", cookie);
+
+    let updated_jar = jar.add(cookie);
+
     // return the secret
-    Ok(Json(session))
+    Ok((updated_jar, StatusCode::OK))
 }
 
 #[cfg(test)]

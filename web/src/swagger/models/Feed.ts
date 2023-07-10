@@ -13,6 +13,13 @@
  */
 
 import { exists, mapValues } from '../runtime';
+import type { SystemTime } from './SystemTime';
+import {
+    SystemTimeFromJSON,
+    SystemTimeFromJSONTyped,
+    SystemTimeToJSON,
+} from './SystemTime';
+
 /**
  * 
  * @export
@@ -38,6 +45,12 @@ export interface Feed {
      */
     imageUrl?: any | null;
     /**
+     * when the feed was last checked
+     * @type {SystemTime}
+     * @memberof Feed
+     */
+    lastChecked: SystemTime;
+    /**
      * link to the feed
      * @type {any}
      * @memberof Feed
@@ -62,6 +75,7 @@ export interface Feed {
  */
 export function instanceOfFeed(value: object): boolean {
     let isInstance = true;
+    isInstance = isInstance && "lastChecked" in value;
     isInstance = isInstance && "url" in value;
 
     return isInstance;
@@ -80,6 +94,7 @@ export function FeedFromJSONTyped(json: any, ignoreDiscriminator: boolean): Feed
         'description': !exists(json, 'description') ? undefined : json['description'],
         'imageText': !exists(json, 'image_text') ? undefined : json['image_text'],
         'imageUrl': !exists(json, 'image_url') ? undefined : json['image_url'],
+        'lastChecked': SystemTimeFromJSON(json['last_checked']),
         'link': !exists(json, 'link') ? undefined : json['link'],
         'title': !exists(json, 'title') ? undefined : json['title'],
         'url': json['url'],
@@ -98,6 +113,7 @@ export function FeedToJSON(value?: Feed | null): any {
         'description': value.description,
         'image_text': value.imageText,
         'image_url': value.imageUrl,
+        'last_checked': SystemTimeToJSON(value.lastChecked),
         'link': value.link,
         'title': value.title,
         'url': value.url,

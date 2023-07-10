@@ -17,7 +17,6 @@ import * as runtime from '../runtime';
 import type {
   LoginData,
   RegisterData,
-  Session,
   User,
 } from '../models';
 import {
@@ -25,8 +24,6 @@ import {
     LoginDataToJSON,
     RegisterDataFromJSON,
     RegisterDataToJSON,
-    SessionFromJSON,
-    SessionToJSON,
     UserFromJSON,
     UserToJSON,
 } from '../models';
@@ -48,7 +45,7 @@ export class AccountApi extends runtime.BaseAPI {
      * provide username and password to get a session token. keep it safe!
      * log in
      */
-    async loginRaw(requestParameters: LoginRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Session>> {
+    async loginRaw(requestParameters: LoginRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
         if (requestParameters.loginData === null || requestParameters.loginData === undefined) {
             throw new runtime.RequiredError('loginData','Required parameter requestParameters.loginData was null or undefined when calling login.');
         }
@@ -67,16 +64,15 @@ export class AccountApi extends runtime.BaseAPI {
             body: LoginDataToJSON(requestParameters.loginData),
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => SessionFromJSON(jsonValue));
+        return new runtime.VoidApiResponse(response);
     }
 
     /**
      * provide username and password to get a session token. keep it safe!
      * log in
      */
-    async login(requestParameters: LoginRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Session> {
-        const response = await this.loginRaw(requestParameters, initOverrides);
-        return await response.value();
+    async login(requestParameters: LoginRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.loginRaw(requestParameters, initOverrides);
     }
 
     /**
@@ -122,10 +118,6 @@ export class AccountApi extends runtime.BaseAPI {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.apiKey) {
-            headerParameters["Key"] = this.configuration.apiKey("Key"); // ApiKey authentication
-        }
 
         const response = await this.request({
             path: `/api/v1/authorized/account/whoami`,

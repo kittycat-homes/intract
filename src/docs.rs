@@ -47,10 +47,10 @@ pub fn add_api_docs(api: TransformOpenApi) -> TransformOpenApi {
             ..Default::default()
         })
         .security_scheme(
-            "ApiKey",
+            "SessionID",
             aide::openapi::SecurityScheme::ApiKey {
-                location: aide::openapi::ApiKeyLocation::Header,
-                name: "Key".into(),
+                location: aide::openapi::ApiKeyLocation::Cookie,
+                name: "SessionID".into(),
                 description: Some("an api key for session auth".into()),
                 extensions: security_extensions,
             },

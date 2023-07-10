@@ -12,5 +12,5 @@ pub fn routes(state: AppState) -> ApiRouter {
         .nest_api_service("/feed", feeds::routes(state.clone()))
         .layer(middleware::from_fn_with_state(state.clone(), guard_user))
         .with_state(state)
-        .with_path_items(|docs| docs.security_requirement("ApiKey"))
+        .with_path_items(|docs| docs.security_requirement("SessionID"))
 }

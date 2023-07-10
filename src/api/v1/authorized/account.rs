@@ -21,5 +21,6 @@ pub fn routes(state: AppState) -> ApiRouter {
 }
 
 async fn whoami(Extension(current_user): Extension<User>) -> Json<User> {
+    tracing::error!("{:#?}", current_user);
     Json(current_user)
 }
