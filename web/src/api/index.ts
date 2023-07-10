@@ -1,4 +1,3 @@
-import { useSessionInfoStore } from "@/store/session_info";
 import { Configuration } from "@/swagger";
 
 // is this production or dev?

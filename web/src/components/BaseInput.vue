@@ -106,7 +106,7 @@ input {
   border-style: none;
   font-size: var(--fs-regular);
   color: var(--black);
-  flex-grow: 1;
+  width: 100%;
 }
 
 input::placeholder {
@@ -159,6 +159,5 @@ label {
   flex-direction: row;
   flex-grow: 1;
   gap: var(--border-width);
-  flex-wrap: wrap;
 }
 </style>

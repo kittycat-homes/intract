@@ -1,14 +1,16 @@
 <template>
   <nav>
     <NavButton link="/" name="home"><HomeIcon /></NavButton>
-    <NavButton link="/feeds" name="feeds"><RssIcon /></NavButton>
+    <NavButton v-if="userStore.info" link="/feeds" name="feeds"
+      ><RssIcon
+    /></NavButton>
     <NavButton
       v-if="userStore.info != null"
       link="/me"
       :name="userStore.info?.username"
       ><UserIcon
     /></NavButton>
-    <NavButton v-if="sessionStore.session === null" link="/login" name="login"
+    <NavButton v-if="userStore.info === null" link="/login" name="login"
       ><ArrowRightOnRectangleIcon
     /></NavButton>
     <NavButton link="/more" name="more"><EllipsisHorizontalIcon /></NavButton>
@@ -24,9 +26,7 @@ import {
   EllipsisHorizontalIcon,
   RssIcon,
 } from "@heroicons/vue/24/solid";
-import { useSessionInfoStore } from "@/store/session_info";
 import { useUserStore } from "@/store/user";
-const sessionStore = useSessionInfoStore();
 const userStore = useUserStore();
 if (
   !userStore.loading &&

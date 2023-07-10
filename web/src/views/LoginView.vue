@@ -82,7 +82,7 @@ const send_login = () => {
 };
 
 const leave_page_cuz_logged_in = () => {
-  if (session.session != null && user.info != null) {
+  if (user.info != null) {
     router.push("/");
   }
 };

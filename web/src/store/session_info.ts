@@ -9,7 +9,6 @@ type SessionInfoState = {
 
 export const useSessionInfoStore = defineStore({
   id: "session-info",
-  persist: true,
   state: () =>
     ({
       status: null,
@@ -20,7 +19,7 @@ export const useSessionInfoStore = defineStore({
     async login(password: string, username: string) {
       this.loading = true;
       try {
-        const data = await new AccountApi(conf()).loginRaw({
+        await new AccountApi(conf()).loginRaw({
           loginData: { password: password, username: username },
         });
         this.status = 200;

@@ -76,6 +76,29 @@ export class AccountApi extends runtime.BaseAPI {
     }
 
     /**
+     */
+    async logoutRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const response = await this.request({
+            path: `/api/v1/authorized/account/logout`,
+            method: 'DELETE',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     */
+    async logout(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.logoutRaw(initOverrides);
+    }
+
+    /**
      * use this if you want a new account. it tries to create a new user with the password + username you gave. by default unapproved users have no permission to access any locked api routesor the login route
      * apply for account
      */

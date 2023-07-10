@@ -74,7 +74,7 @@ pub struct User {
     pub salt: String,
 }
 
-#[derive(Queryable, Selectable, Serialize, Deserialize, JsonSchema, Insertable)]
+#[derive(Queryable, Selectable, Serialize, JsonSchema, Insertable, Clone, Debug)]
 #[diesel(table_name= crate::schema::sessions)]
 #[diesel(check_for_backend(diesel::pg::Pg))]
 pub struct Session {

@@ -8,7 +8,7 @@ use axum_extra::extract::CookieJar;
 use diesel::prelude::*;
 
 use crate::{
-    db::models::{Powerlevel, User},
+    db::models::{Powerlevel, Session, User},
     schema::{
         sessions::{self, secret},
         users,
@@ -30,8 +30,6 @@ pub async fn guard_user<T>(
         .ok_or(StatusCode::UNAUTHORIZED)?
         .value();
 
-    tracing::error!("got session");
-
     let mut conn = state
         .pool
         .get()
@@ -50,7 +48,14 @@ pub async fn guard_user<T>(
         return Err(StatusCode::UNAUTHORIZED);
     }
 
+    let session: Session = sessions::table
+        .select(Session::as_select())
+        .first(&mut conn)
+        .await
+        .or(Err(StatusCode::UNAUTHORIZED))?;
+
     request.extensions_mut().insert(user);
+    request.extensions_mut().insert(session);
 
     Ok(next.run(request).await)
 }
