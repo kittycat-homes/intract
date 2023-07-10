@@ -87,7 +87,7 @@
   );
 }
 
-@media screen and (orientation: landscape) and (min-width: 1280px) {
+@media screen and (min-width: 1280px) {
   .card {
     flex-direction: row;
     display: flex;
