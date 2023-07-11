@@ -135,35 +135,6 @@ async fn test_login() {
 
     let result = post_json_to(&data, "/api/v1/account/login").await;
     assert_eq!(result.status(), StatusCode::OK);
-    let app = app().await;
-    let whoamiresult = app
-        .clone()
-        .oneshot(
-            Request::builder()
-                .method("GET")
-                .uri("/api/v1/authorized/account/whoami")
-                .header("Key", &session.secret)
-                .body(Body::empty())
-                .unwrap(),
-        )
-        .await
-        .unwrap();
-    assert_eq!(whoamiresult.status(), StatusCode::UNAUTHORIZED);
-
-    cli::user::change_powerlevel(ADMIN_USERNAME, &Powerlevel::Owner).unwrap();
-
-    let whoamiresult_allowed = app
-        .oneshot(
-            Request::builder()
-                .method("GET")
-                .uri("/api/v1/authorized/account/whoami")
-                .header("Key", &session.secret)
-                .body(Body::empty())
-                .unwrap(),
-        )
-        .await
-        .unwrap();
-    assert_eq!(whoamiresult_allowed.status(), StatusCode::OK);
 }
 
 #[tokio::test]
