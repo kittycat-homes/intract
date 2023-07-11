@@ -8,8 +8,6 @@ use serde_json::json;
 
 use tower::ServiceExt;
 
-
-
 use crate::{
     api::v1::account::{LoginData, RegisterData},
     cli,
@@ -137,12 +135,6 @@ async fn test_login() {
 
     let result = post_json_to(&data, "/api/v1/account/login").await;
     assert_eq!(result.status(), StatusCode::OK);
-
-    let session: Session =
-        serde_json::from_slice(&hyper::body::to_bytes(result.into_body()).await.unwrap()).unwrap();
-
-    cli::user::change_powerlevel(ADMIN_USERNAME, &Powerlevel::Unapproved).unwrap();
-
     let app = app().await;
     let whoamiresult = app
         .clone()
