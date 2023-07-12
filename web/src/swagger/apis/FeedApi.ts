@@ -16,17 +16,24 @@
 import * as runtime from '../runtime';
 import type {
   FeedData,
+  FeedsInput,
   FollowFeedInputData,
 } from '../models';
 import {
     FeedDataFromJSON,
     FeedDataToJSON,
+    FeedsInputFromJSON,
+    FeedsInputToJSON,
     FollowFeedInputDataFromJSON,
     FollowFeedInputDataToJSON,
 } from '../models';
 
 export interface FollowFeedRequest {
     followFeedInputData: FollowFeedInputData;
+}
+
+export interface ShowFeedRequest {
+    feedsInput: FeedsInput;
 }
 
 /**
@@ -66,6 +73,43 @@ export class FeedApi extends runtime.BaseAPI {
      */
     async followFeed(requestParameters: FollowFeedRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<FeedData> {
         const response = await this.followFeedRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * show the feeds
+     */
+    async showFeedRaw(requestParameters: ShowFeedRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<any>> {
+        if (requestParameters.feedsInput === null || requestParameters.feedsInput === undefined) {
+            throw new runtime.RequiredError('feedsInput','Required parameter requestParameters.feedsInput was null or undefined when calling showFeed.');
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        const response = await this.request({
+            path: `/api/v1/authorized/feed/show`,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+            body: FeedsInputToJSON(requestParameters.feedsInput),
+        }, initOverrides);
+
+        if (this.isJsonMime(response.headers.get('content-type'))) {
+            return new runtime.JSONApiResponse<any>(response);
+        } else {
+            return new runtime.TextApiResponse(response) as any;
+        }
+    }
+
+    /**
+     * show the feeds
+     */
+    async showFeed(requestParameters: ShowFeedRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<any> {
+        const response = await this.showFeedRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

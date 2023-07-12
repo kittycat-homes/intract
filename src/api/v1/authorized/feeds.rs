@@ -1,4 +1,7 @@
-use aide::axum::{routing::post_with, ApiRouter};
+use aide::axum::{
+    routing::{get_with, post_with},
+    ApiRouter, IntoApiResponse,
+};
 use axum::{extract::State, Extension};
 use diesel::{ExpressionMethods, QueryDsl, SelectableHelper};
 use hyper::StatusCode;
@@ -6,9 +9,10 @@ use schemars::JsonSchema;
 use serde::Deserialize;
 
 use crate::{
-    db::models::{FeedItem, User, UsersFollowFeeds},
+    db::models::{Feed, FeedItem, User, UsersFollowFeeds},
     extractors::Json,
     feeds::{self, FeedData},
+    schema::users_follow_feeds,
     state::AppState,
 };
 
@@ -24,6 +28,14 @@ pub fn routes(state: AppState) -> ApiRouter {
                         docs.description("failed to parse or get rss feed")
                     })
                     .tag("feed")
+            }),
+        )
+        .api_route(
+            "/show",
+            get_with(get_feeds, |docs| {
+                docs.description("show the feeds")
+                    .tag("feed")
+                    .id("show-feed")
             }),
         )
         .with_state(state)
@@ -117,4 +129,41 @@ async fn add_feed(
     }
 
     Ok(Json(feed_data))
+}
+
+#[derive(JsonSchema, Deserialize)]
+pub struct FeedsInput {
+    /// show feeds that you have hidden
+    pub show_hidden: bool,
+}
+
+async fn get_feeds(
+    State(state): State<AppState>,
+    Extension(current_user): Extension<User>,
+    Json(input): Json<FeedsInput>,
+) -> Result<Json<Vec<Feed>>, StatusCode> {
+    use diesel_async::RunQueryDsl;
+
+    let mut conn = state
+        .pool
+        .get()
+        .await
+        .or(Err(StatusCode::SERVICE_UNAVAILABLE))?;
+
+    let feeds: Vec<Feed> = users_follow_feeds::table
+        .filter(users_follow_feeds::user_id.eq(current_user.id))
+        .filter(
+            users_follow_feeds::dsl::hidden.eq_any(if input.show_hidden {
+                vec![true, false]
+            } else {
+                vec![false]
+            }),
+        )
+        .inner_join(crate::schema::feeds::table)
+        .select(Feed::as_select())
+        .load(&mut conn)
+        .await
+        .or(Err(StatusCode::SERVICE_UNAVAILABLE))?;
+
+    Ok(Json(feeds))
 }
