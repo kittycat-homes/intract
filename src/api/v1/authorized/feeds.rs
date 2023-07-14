@@ -2,7 +2,10 @@ use aide::axum::{
     routing::{get_with, post_with},
     ApiRouter, IntoApiResponse,
 };
-use axum::{extract::State, Extension};
+use axum::{
+    extract::{Query, State},
+    Extension,
+};
 use diesel::{ExpressionMethods, QueryDsl, SelectableHelper};
 use hyper::StatusCode;
 use schemars::JsonSchema;
@@ -24,6 +27,9 @@ pub fn routes(state: AppState) -> ApiRouter {
                 docs.id("follow-feed")
                     .summary("follow a feed")
                     .description("follow a new feed")
+                    .response_with::<201, (), _>(|docs| {
+                        docs.description("successfully followed this feed")
+                    })
                     .response_with::<400, (), _>(|docs| {
                         docs.description("failed to parse or get rss feed")
                     })
@@ -31,11 +37,15 @@ pub fn routes(state: AppState) -> ApiRouter {
             }),
         )
         .api_route(
-            "/show",
+            "/show/",
             get_with(get_feeds, |docs| {
-                docs.description("show the feeds")
-                    .tag("feed")
-                    .id("show-feed")
+                docs.description(
+                    "show feeds followed by the \
+                authenticated user",
+                )
+                .tag("feed")
+                .id("show-feeds")
+                .summary("show feeds")
             }),
         )
         .with_state(state)
@@ -54,7 +64,7 @@ async fn add_feed(
     State(state): State<AppState>,
     Extension(current_user): Extension<User>,
     Json(input): Json<FollowFeedInputData>,
-) -> Result<Json<FeedData>, StatusCode> {
+) -> Result<StatusCode, StatusCode> {
     use crate::schema::feed_items::dsl::*;
     use diesel_async::RunQueryDsl;
 
@@ -128,7 +138,7 @@ async fn add_feed(
         return Err(StatusCode::SERVICE_UNAVAILABLE);
     }
 
-    Ok(Json(feed_data))
+    Ok(StatusCode::CREATED)
 }
 
 #[derive(JsonSchema, Deserialize)]
@@ -140,7 +150,7 @@ pub struct FeedsInput {
 async fn get_feeds(
     State(state): State<AppState>,
     Extension(current_user): Extension<User>,
-    Json(input): Json<FeedsInput>,
+    Query(input): Query<FeedsInput>,
 ) -> Result<Json<Vec<Feed>>, StatusCode> {
     use diesel_async::RunQueryDsl;
 

@@ -1,8 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
 export * from './Feed';
-export * from './FeedData';
-export * from './FeedItem';
 export * from './FeedsInput';
 export * from './FollowFeedInputData';
 export * from './LoginData';

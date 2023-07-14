@@ -5,8 +5,6 @@ apis/ServerApi.ts
 apis/index.ts
 index.ts
 models/Feed.ts
-models/FeedData.ts
-models/FeedItem.ts
 models/FeedsInput.ts
 models/FollowFeedInputData.ts
 models/LoginData.ts

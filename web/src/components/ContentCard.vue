@@ -63,6 +63,10 @@
   margin: var(--pad-size);
 }
 
+.title:deep(h2) {
+  color: var(--tertiary-accent);
+}
+
 .title {
   display: flex;
   margin-top: var(--fs-large);

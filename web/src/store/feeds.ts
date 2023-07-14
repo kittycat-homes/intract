@@ -1,43 +1,32 @@
 import { conf } from "@/api";
-import {
-  Feed,
-  FeedApi,
-  FeedsInput,
-  ServerApi,
-  ServerInfo,
-  ShowFeedRequest,
-} from "@/swagger";
+import { Feed, FeedApi, FeedsInput } from "@/swagger";
 import { defineStore } from "pinia";
 
 type ServerInfoStoreState = {
   error: boolean;
   loading: boolean;
-  show_hidden: boolean;
-  info: Feed | null;
+  showHidden: boolean;
+  items: Feed[];
 };
 
-export const useServerInfoStore = defineStore({
+export const useFeedStore = defineStore({
   id: "server-info",
   state: () =>
     ({
-      show_hidden: false,
+      showHidden: false,
       error: false,
       loading: false,
-      info: null,
+      items: [],
     } as ServerInfoStoreState),
   actions: {
     async fetchServerInfo() {
-      if (this.info != null) {
-        return;
-      }
       this.loading = true;
-      this.info = await new FeedApi(conf())
-        .showFeed({
-          feedsInput: { showHidden: this.show_hidden } as FeedsInput,
-        })
-        .catch(() => {
+      this.items = await new FeedApi(conf())
+        .showFeeds({ showHidden: true })
+        .catch((e) => {
+          console.log(e);
           this.error = true;
-          return null;
+          return [];
         })
         .finally(() => {
           this.loading = false;
