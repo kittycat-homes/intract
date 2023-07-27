@@ -1,7 +1,7 @@
 <template>
   <FilterBox>
     <router-link class="link" to="/feeds/follow"
-      ><BookmarkIcon />follow feed</router-link
+      ><BookmarkIcon /><span>follow feed</span></router-link
     >
   </FilterBox>
   <LoadingSpinner v-if="feed_store.loading" />
