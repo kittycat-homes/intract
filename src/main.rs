@@ -78,7 +78,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             subcommand,
             username,
         } => match subcommand {
-            cli::UserSubcommands::ChangePassword { new_password } => {
+            cli::UserSubcommands::SetPassword { new_password } => {
                 cli::user::change_password(&username, &new_password)?
             }
             cli::UserSubcommands::SetPowerLevel { powerlevel } => {

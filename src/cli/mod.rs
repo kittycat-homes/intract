@@ -34,7 +34,7 @@ pub enum Commands {
 #[derive(Subcommand, Clone)]
 pub enum UserSubcommands {
     /// change a users power level
-    SetPowerLevel {powerlevel: Powerlevel},
+    SetPowerLevel { powerlevel: Powerlevel },
     /// change a users password
-    ChangePassword { new_password: String },
+    SetPassword { new_password: String },
 }
