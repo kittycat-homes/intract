@@ -91,7 +91,7 @@
   );
 }
 
-@media screen and (min-width: 1280px) {
+@container (min-width: 720px) {
   .card {
     flex-direction: row;
     display: flex;
@@ -154,7 +154,7 @@
   }
 }
 
-@media (max-width: 600px) {
+@container (max-width: 600px) {
   .title {
     flex-direction: column-reverse;
   }

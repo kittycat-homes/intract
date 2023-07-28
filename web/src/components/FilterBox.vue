@@ -1,11 +1,12 @@
 <template>
   <div class="filter-box">
-    <div class="slot-content" v-if="state.show">
-      <slot></slot>
-    </div>
     <button class="hide-button" @click="state.show = !state.show">
       {{ state.show ? "hide" : "show" }}
     </button>
+
+    <div class="slot-content" v-if="state.show">
+      <slot></slot>
+    </div>
   </div>
 </template>
 
@@ -53,6 +54,10 @@
   color: var(--black);
 }
 
+.filter-box:deep(.link:hover) {
+  background-color: var(--light-orange-hover);
+}
+
 .filter-box:deep(h1) {
   font-size: var(--fs-xl);
 }
@@ -74,7 +79,7 @@
   .filter-box {
     height: 100%;
     order: 500;
-    flex-direction: row-reverse;
+    flex-direction: row;
     width: min-content;
   }
   .filter-box:deep(.link > span) {
