@@ -6,7 +6,7 @@
   </FilterBox>
   <LoadingSpinner v-if="feed_store.loading" />
   <ContentBox v-else>
-    <NoContent />
+    <NoContent v-if="feed_store.items.length === 0" />
     <ContentCard v-for="item in feed_store.items" :key="item.url">
       <template v-slot:title>
         <h2>{{ item.title ?? item.url }}</h2></template

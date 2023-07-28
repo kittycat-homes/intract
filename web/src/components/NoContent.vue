@@ -19,6 +19,7 @@ svg {
 }
 
 span {
+  margin: auto;
   align-items: center;
   justify-content: center;
   display: flex;
