@@ -1,7 +1,9 @@
 <template>
   <div class="filter-box">
     <button class="hide-button" @click="state.show = !state.show">
-      {{ state.show ? "hide" : "show" }}
+      <XMarkIcon v-if="state.show" />
+      <Bars3Icon v-else />
+      {{ state.show ? "close menu" : "open menu" }}
     </button>
 
     <div class="slot-content" v-if="state.show">
@@ -28,6 +30,10 @@
 }
 
 .hide-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--pad-size);
   width: 100%;
   height: 100%;
   background-color: var(--light-orange-clickable);
@@ -75,6 +81,11 @@
   font-size: var(--fs-regulars);
 }
 
+svg {
+  height: var(--fs-regular);
+  width: var(--fs-regular);
+}
+
 @media (orientation: landscape) {
   .filter-box {
     height: 100%;
@@ -93,11 +104,13 @@
 
   .hide-button {
     width: min-content;
+    flex-direction: column;
   }
 }
 </style>
 
 <script setup lang="ts">
 import { useFilterBarStore } from "@/store/filter_bar";
+import { XMarkIcon, Bars3Icon } from "@heroicons/vue/24/solid";
 const state = useFilterBarStore();
 </script>

@@ -42,6 +42,7 @@
   background-color: var(--light-orange);
   border-radius: var(--radius);
   flex: 1;
+  width: 100%;
 }
 
 .content {

@@ -8,6 +8,8 @@
 .box {
   display: flex;
   flex-direction: column;
+  align-items: center;
+  justify-content: center;
   gap: var(--pad-size);
   padding: var(--pad-size);
   overflow: scroll;

@@ -1,6 +1,5 @@
 <template>
   <FilterBox>
-    <h1>follow feed</h1>
     <router-link class="link" to="/feeds"
       ><ArrowUturnLeftIcon /><span>back to feeds</span></router-link
     >
